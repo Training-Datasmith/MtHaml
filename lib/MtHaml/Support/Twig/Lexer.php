@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Support\Twig;
 
 use MtHaml\Environment;

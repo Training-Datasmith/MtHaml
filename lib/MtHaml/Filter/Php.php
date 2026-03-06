@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter;
 
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-use MtHaml\NodeVisitor\PhpRenderer;
 use MtHaml\Node\Filter;
+use MtHaml\NodeVisitor\PhpRenderer;
+use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 
 class Php extends AbstractFilter
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter\Markdown;
 
 use MtHaml\Filter\Markdown;

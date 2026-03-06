@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 class TestCase extends \PHPUnit_Framework_TestCase
@@ -19,7 +21,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if (!empty($class)) {
             if (null === $e) {
                 $this->assertThat(
-                    NULL,
+                    null,
                     new \PHPUnit_Framework_Constraint_Exception($class)
                 );
             }
@@ -38,7 +40,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $contents = file_get_contents($file);
         $splits = preg_split('#^--([^-]*)--$#m', $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $parts = array();
+        $parts = [];
 
         while (false !== $key = next($splits)) {
             $parts[$key] = substr(next($splits), 1, -1);

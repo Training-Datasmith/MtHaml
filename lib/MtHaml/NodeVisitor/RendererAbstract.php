@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
+use MtHaml\Environment;
+use MtHaml\Node\Comment;
+use MtHaml\Node\Doctype;
+use MtHaml\Node\Filter;
+use MtHaml\Node\InterpolatedString;
+use MtHaml\Node\NestInterface;
+use MtHaml\Node\NodeAbstract;
+use MtHaml\Node\Run;
+use MtHaml\Node\Statement;
 use MtHaml\Node\Tag;
 use MtHaml\Node\TagAttribute;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Text;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\Doctype;
-use MtHaml\Node\Comment;
-use MtHaml\Environment;
-use MtHaml\Node\Filter;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Node\NestInterface;
-use MtHaml\Node\Run;
 use MtHaml\Node\TagAttributeInterpolation;
 use MtHaml\Node\TagAttributeList;
+use MtHaml\Node\Text;
 
 abstract class RendererAbstract extends NodeVisitorAbstract
 {

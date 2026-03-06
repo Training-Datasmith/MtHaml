@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 use MtHaml\Environment;
@@ -16,22 +18,22 @@ class HamlSpecTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('HAML_SPEC_TEST_JSON_PATH not set');
         }
 
-        $config = array(
+        $config = [
             'enable_escaper' => false,
-        );
+        ];
 
         if (isset($test['config'])) {
             foreach ($test['config'] as $key => $value) {
                 switch ($key) {
-                case 'format':
-                    $config['format'] = $value;
-                    break;
-                default:
+                    case 'format':
+                        $config['format'] = $value;
+                        break;
+                    default:
                 }
             }
         }
 
-        $locals = array();
+        $locals = [];
 
         if (isset($test['locals'])) {
             $locals = $test['locals'];
@@ -40,11 +42,11 @@ class HamlSpecTest extends \PHPUnit_Framework_TestCase
         $env = new Environment('twig', $config);
         $str = $env->compileString($test['haml'], "$name.haml");
 
-        $loader = new \Twig_Loader_Array(array(
+        $loader = new \Twig_Loader_Array([
             'test.twig' => $str,
-        ));
+        ]);
         $twig = new \Twig_Environment($loader);
-        $twig->addExtension(new Extension);
+        $twig->addExtension(new Extension());
 
         $html = $twig->render('test.twig', $locals);
 
@@ -57,7 +59,7 @@ class HamlSpecTest extends \PHPUnit_Framework_TestCase
     {
         $inputPath = getenv('HAML_SPEC_TEST_JSON_PATH');
         if (!$inputPath) {
-            return array(array(null, null));
+            return [[null, null]];
         }
 
         $input = json_decode(file_get_contents($inputPath), true);
@@ -67,14 +69,14 @@ class HamlSpecTest extends \PHPUnit_Framework_TestCase
 
     private function genData($input, $prefix = '')
     {
-        $data = array();
+        $data = [];
 
         foreach ($input as $key => $value) {
             if (!isset($value['haml'])) {
                 $data = array_merge($data, $this->genData($value, $prefix.$key.': '));
             } else {
                 $name = $prefix.$key.': ';
-                $data[$name] = array($name, $value);
+                $data[$name] = [$name, $value];
             }
         }
 

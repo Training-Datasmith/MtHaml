@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
 use MtHaml\Node\Run;
@@ -11,7 +13,7 @@ class Midblock extends NodeVisitorAbstract
     public function __construct($midblockRegex)
     {
         $this->midblockRegex = $midblockRegex;
-        $this->skip = new \SplObjectStorage;
+        $this->skip = new \SplObjectStorage();
     }
 
     public function enterRun(Run $node)

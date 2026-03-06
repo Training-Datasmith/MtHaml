@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml;
 
+use MtHaml\Filter\FilterInterface;
+use MtHaml\NodeVisitor\Autoclose;
+use MtHaml\NodeVisitor\Escaping as EscapingVisitor;
+use MtHaml\NodeVisitor\MergeAttrs;
+use MtHaml\NodeVisitor\Midblock;
 use MtHaml\Target\Php;
 use MtHaml\Target\Twig;
-use MtHaml\NodeVisitor\Escaping as EscapingVisitor;
-use MtHaml\NodeVisitor\Autoclose;
-use MtHaml\NodeVisitor\Midblock;
-use MtHaml\NodeVisitor\MergeAttrs;
-use MtHaml\Filter\FilterInterface;
 
 class Environment
 {
@@ -89,7 +91,7 @@ class Environment
                 throw new \RuntimeException(sprintf('Class "%s" for filter "%s" does not exists', $filter, $name));
             }
 
-            $filter = new $filter;
+            $filter = new $filter();
             $this->addFilter($name, $filter);
         }
 
@@ -113,10 +115,10 @@ class Environment
         if (is_string($target)) {
             switch ($target) {
                 case 'php':
-                    $target = new Php;
+                    $target = new Php();
                     break;
                 case 'twig':
-                    $target = new Twig;
+                    $target = new Twig();
                     break;
                 default:
                     throw new Exception(sprintf('Unknown target language: %s', $target));
@@ -171,6 +173,6 @@ class Environment
 
     public function getMergeAttrsVisitor()
     {
-        return new MergeAttrs;
+        return new MergeAttrs();
     }
 }

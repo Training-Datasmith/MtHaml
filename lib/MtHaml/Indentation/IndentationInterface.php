@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Indentation;
 
 interface IndentationInterface
@@ -47,4 +49,3 @@ interface IndentationInterface
      */
     public function getString($levelOffset = 0, $fallback = null);
 }
-

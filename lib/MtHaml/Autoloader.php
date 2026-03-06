@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml;
 
 class Autoloader
 {
     public static function register()
     {
-        spl_autoload_register([new self, 'autoload']);
+        spl_autoload_register([new self(), 'autoload']);
     }
 
     public static function autoload($class)

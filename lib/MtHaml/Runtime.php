@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml;
 
 use MtHaml\Runtime\AttributeInterpolation;
@@ -71,7 +73,7 @@ class Runtime
                 continue;
             }
 
-            list ($name, $value) = $item;
+            list($name, $value) = $item;
 
             if ('data' === $name) {
                 self::renderDataAttributes($dest, $value);
@@ -196,7 +198,7 @@ class Runtime
     {
         $class = self::getObjectRefName($object);
         if (false !== $pos = \strrpos($class, '\\')) {
-            $class = \substr($class, $pos+1);
+            $class = \substr($class, $pos + 1);
         }
 
         return \strtolower(\preg_replace('#(?<=[a-z])[A-Z]+#', '_$0', $class));

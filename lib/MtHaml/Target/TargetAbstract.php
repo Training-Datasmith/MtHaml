@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Target;
 
 use MtHaml\Environment;
@@ -20,7 +22,7 @@ abstract class TargetAbstract implements TargetInterface
     public function getDefaultParserFactory()
     {
         return function (Environment $env, array $options) {
-            return new Parser;
+            return new Parser();
         };
     }
 

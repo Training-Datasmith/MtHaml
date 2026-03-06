@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 use MtHaml\Indentation\Undefined;
@@ -21,78 +23,78 @@ class IndentationTest extends \PHPUnit_Framework_TestCase
 
     public function getTransitionData()
     {
-        return array(
-            'none' => array(
+        return [
+            'none' => [
                 'char' => null,
                 'width' => null,
                 'level' => 0,
                 'string' => '',
-                array(''),
-            ),
-            'one' => array(
+                [''],
+            ],
+            'one' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 1,
                 'string' => '  ',
-                array('  '),
-            ),
-            'two' => array(
+                ['  '],
+            ],
+            'two' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 2,
                 'string' => '    ',
-                array('  ', '    '),
-            ),
-            'two, 3 spaces' => array(
+                ['  ', '    '],
+            ],
+            'two, 3 spaces' => [
                 'char' => ' ',
                 'width' => 3,
                 'level' => 2,
                 'string' => '      ',
-                array('   ', '      '),
-            ),
-            'two, 4 spaces' => array(
+                ['   ', '      '],
+            ],
+            'two, 4 spaces' => [
                 'char' => ' ',
                 'width' => 4,
                 'level' => 2,
                 'string' => '        ',
-                array('    ', '        '),
-            ),
-            'two, tabs' => array(
+                ['    ', '        '],
+            ],
+            'two, tabs' => [
                 'char' => "\t",
                 'width' => 1,
                 'level' => 2,
                 'string' => "\t\t",
-                array("\t", "\t\t"),
-            ),
-            'same level' => array(
+                ["\t", "\t\t"],
+            ],
+            'same level' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 2,
                 'string' => '    ',
-                array('  ', '    ', '    '),
-            ),
-            'undent' => array(
+                ['  ', '    ', '    '],
+            ],
+            'undent' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 1,
                 'string' => '  ',
-                array('  ', '    ', '  '),
-            ),
-            'undent many' => array(
+                ['  ', '    ', '  '],
+            ],
+            'undent many' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 1,
                 'string' => '  ',
-                array('  ', '    ', '      ', '  '),
-            ),
-            'undent to zero' => array(
+                ['  ', '    ', '      ', '  '],
+            ],
+            'undent to zero' => [
                 'char' => ' ',
                 'width' => 2,
                 'level' => 0,
                 'string' => '',
-                array('  ', '    ', '      ', ''),
-            ),
-        );
+                ['  ', '    ', '      ', ''],
+            ],
+        ];
     }
 
     /**
@@ -102,7 +104,7 @@ class IndentationTest extends \PHPUnit_Framework_TestCase
     public function testOnlySpacesAndTabsAreAllowed()
     {
         $i = new Undefined();
-        $i->newLevel("_");
+        $i->newLevel('_');
     }
 
     /**
@@ -122,8 +124,8 @@ class IndentationTest extends \PHPUnit_Framework_TestCase
     public function testCanOnlyIndentOneLevelAtOnce()
     {
         $i = new Undefined();
-        $i = $i->newLevel(" ");
-        $i = $i->newLevel("    ");
+        $i = $i->newLevel(' ');
+        $i = $i->newLevel('    ');
     }
 
     /**
@@ -133,8 +135,7 @@ class IndentationTest extends \PHPUnit_Framework_TestCase
     public function testWidthMustBeConsistent()
     {
         $i = new Undefined();
-        $i = $i->newLevel("  ");
-        $i = $i->newLevel("   ");
+        $i = $i->newLevel('  ');
+        $i = $i->newLevel('   ');
     }
 }
-

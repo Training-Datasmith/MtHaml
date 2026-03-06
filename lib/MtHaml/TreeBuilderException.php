@@ -1,8 +1,8 @@
 <?php
 
-namespace MtHaml;
+declare(strict_types=1);
 
-use MtHaml\Exception;
+namespace MtHaml;
 
 class TreeBuilderException extends Exception
 {

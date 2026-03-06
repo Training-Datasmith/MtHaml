@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Runtime;
 
 class AttributeList
@@ -8,7 +10,7 @@ class AttributeList
 
     public static function create($attributes)
     {
-        $instance = new AttributeList;
+        $instance = new AttributeList();
         $instance->attributes = $attributes;
 
         return $instance;

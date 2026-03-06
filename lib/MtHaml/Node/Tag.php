@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Node;
 
 use MtHaml\NodeVisitor\NodeVisitorInterface;
 
 class Tag extends NestAbstract
 {
-    const FLAG_REMOVE_INNER_WHITESPACES = 1;
-    const FLAG_REMOVE_OUTER_WHITESPACES = 2;
-    const FLAG_SELF_CLOSE = 4;
+    public const FLAG_REMOVE_INNER_WHITESPACES = 1;
+    public const FLAG_REMOVE_OUTER_WHITESPACES = 2;
+    public const FLAG_SELF_CLOSE = 4;
 
     protected $tagName;
     protected $attributes;

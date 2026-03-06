@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Target;
 
-use MtHaml\NodeVisitor\PhpRenderer;
 use MtHaml\Environment;
+use MtHaml\NodeVisitor\PhpRenderer;
 
 class Php extends TargetAbstract
 {

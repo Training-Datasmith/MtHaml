@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests\NodeVisitor;
 
+use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\Text;
 use MtHaml\NodeVisitor\TwigRenderer;
-use MtHaml\Node\InterpolatedString;
 
 class TwigRendererTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,43 +28,43 @@ class TwigRendererTest extends \PHPUnit_Framework_TestCase
 
     public function getCurlyPercentAndCurlyCurclyAreEscapedData()
     {
-        $pos = array(0, 0);
+        $pos = [0, 0];
 
-        return array(
-            'middle' => array(
+        return [
+            'middle' => [
                 'expect' => "foo {{ '{{' }} bar {{ '{%' }} baz",
                 'node' => function () use ($pos) {
-                    return new Text($pos, "foo {{ bar {% baz");
+                    return new Text($pos, 'foo {{ bar {% baz');
                 },
-            ),
-            'leading in node, not preceeded by {' => array(
-                'expect' => "foo % bar { baz",
+            ],
+            'leading in node, not preceeded by {' => [
+                'expect' => 'foo % bar { baz',
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, 'foo '),
                         new Text($pos, '% bar '),
                         new Text($pos, '{ baz'),
-                    ));
+                    ]);
                 },
-            ),
-            'leading in node, preceeded by {' => array(
+            ],
+            'leading in node, preceeded by {' => [
                 'expect' => "foo {{{ '%' }} bar {{{ '{' }} baz",
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, 'foo {'),
                         new Text($pos, '% bar {'),
                         new Text($pos, '{ baz'),
-                    ));
+                    ]);
                 },
-            ),
-            'leading in node, globally leading' => array(
+            ],
+            'leading in node, globally leading' => [
                 'expect' => "{{ '%' }} bar",
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, '% bar'),
-                    ));
+                    ]);
                 },
-            ),
-        );
+            ],
+        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests\Parser;
 
 use MtHaml\Parser\Buffer;
@@ -11,40 +13,40 @@ class BufferTest extends \PHPUnit_Framework_TestCase
         $buffer = new Buffer("  abc\n    def\nghi");
 
         $this->assertTrue($buffer->nextLine());
-        $this->assertSame("  abc", $buffer->getLine());
+        $this->assertSame('  abc', $buffer->getLine());
 
         $this->assertTrue($buffer->match('~z*~A', $match));
-        $this->assertSame(array(
+        $this->assertSame([
             '',
-            'pos' => array(
-                array('lineno' => 1, 'column' => 0),
-            ),
-        ), $match);
-        $this->assertSame("  abc", $buffer->getLine());
+            'pos' => [
+                ['lineno' => 1, 'column' => 0],
+            ],
+        ], $match);
+        $this->assertSame('  abc', $buffer->getLine());
 
         $this->assertTrue($buffer->match('~(\s*)(a)~A', $match));
-        $this->assertSame(array(
+        $this->assertSame([
             '  a',
             '  ',
             'a',
-            'pos' => array(
-                array('lineno' => 1, 'column' => 0),
-                array('lineno' => 1, 'column' => 0),
-                array('lineno' => 1, 'column' => 2),
-            ),
-        ), $match);
-        $this->assertSame("bc", $buffer->getLine());
+            'pos' => [
+                ['lineno' => 1, 'column' => 0],
+                ['lineno' => 1, 'column' => 0],
+                ['lineno' => 1, 'column' => 2],
+            ],
+        ], $match);
+        $this->assertSame('bc', $buffer->getLine());
 
         $this->assertTrue($buffer->nextLine());
-        $this->assertSame("    def", $buffer->getLine());
+        $this->assertSame('    def', $buffer->getLine());
         $this->assertSame(2, $buffer->getLineno());
 
         $this->assertSame(' ', $buffer->peekChar());
-        $this->assertSame("    def", $buffer->getLine());
+        $this->assertSame('    def', $buffer->getLine());
         $this->assertSame(1, $buffer->getColumn());
 
         $this->assertSame(' ', $buffer->eatChar());
-        $this->assertSame("   def", $buffer->getLine());
+        $this->assertSame('   def', $buffer->getLine());
         $this->assertSame(2, $buffer->getColumn());
 
         $buffer->skipWs();
@@ -60,18 +62,18 @@ class BufferTest extends \PHPUnit_Framework_TestCase
 
     public function testEatChars()
     {
-        $buffer = new Buffer("abcdef");
+        $buffer = new Buffer('abcdef');
 
         $buffer->nextLine();
 
         $chars = $buffer->eatChars(2);
-        $this->assertSame("ab", $chars);
-        $this->assertSame("cdef", $buffer->getLine());
+        $this->assertSame('ab', $chars);
+        $this->assertSame('cdef', $buffer->getLine());
         $this->assertSame(3, $buffer->getColumn());
 
         $chars = $buffer->eatChars(5);
-        $this->assertSame("cdef", $chars);
-        $this->assertSame("", $buffer->getLine());
+        $this->assertSame('cdef', $chars);
+        $this->assertSame('', $buffer->getLine());
         $this->assertSame(7, $buffer->getColumn());
     }
 }

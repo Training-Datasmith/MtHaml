@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
+use MtHaml\Node\Filter;
 use MtHaml\Node\Insert;
-use MtHaml\Node\Run;
 use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\Tag;
-use MtHaml\Node\ObjectRefClass;
 use MtHaml\Node\NodeAbstract;
+use MtHaml\Node\ObjectRefClass;
 use MtHaml\Node\ObjectRefId;
+use MtHaml\Node\Run;
+use MtHaml\Node\Tag;
 use MtHaml\Node\TagAttributeInterpolation;
 use MtHaml\Node\TagAttributeList;
-use MtHaml\Node\Filter;
 
 class PhpRenderer extends RendererAbstract
 {
@@ -26,7 +28,7 @@ class PhpRenderer extends RendererAbstract
         // when context is empty, consider that we don't know what's before
         if (0 < strlen($context)) {
             $len = strlen($context);
-            $char = $context[$len-1];
+            $char = $context[$len - 1];
             if ('<' !== $char) {
                 $re = '~(<\?)~';
             }
@@ -96,12 +98,12 @@ class PhpRenderer extends RendererAbstract
 
         if (!$node->isBlock()) {
             if (preg_match('~[:;]\s*$~', $content)) {
-                $this->write(sprintf('<?php %s ?>' , $content));
+                $this->write(sprintf('<?php %s ?>', $content));
             } else {
-                $this->write(sprintf('<?php %s; ?>' , $content));
+                $this->write(sprintf('<?php %s; ?>', $content));
             }
         } else {
-            $this->write(sprintf('<?php %s { ?>' , $content));
+            $this->write(sprintf('<?php %s { ?>', $content));
         }
     }
 
@@ -111,7 +113,7 @@ class PhpRenderer extends RendererAbstract
 
         $content = $this->trimInlineComments($node->getContent());
 
-        $this->write(sprintf('<?php } %s { ?>' , $content));
+        $this->write(sprintf('<?php } %s { ?>', $content));
     }
 
     public function leaveTopBlock(Run $node)

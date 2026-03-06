@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml;
 
 use MtHaml\Node\NestInterface;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Root;
 use MtHaml\Node\NodeAbstract;
+use MtHaml\Node\Root;
+use MtHaml\Node\Statement;
 use MtHaml\Node\Tag;
 
 class TreeBuilder
@@ -87,7 +89,7 @@ class TreeBuilder
             $this->parentStack[] = $this->parent;
             $this->parent = $this->prev;
 
-        // close node(s)
+            // close node(s)
 
         } elseif ($level < 0) {
 

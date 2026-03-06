@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter;
 
-use MtHaml\Node\InterpolatedString;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 use MtHaml\Node\Filter;
+use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\Text;
+use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 
 abstract class OptimizableFilter extends AbstractFilter
 {

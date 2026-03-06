@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml;
 
 use MtHaml\Exception\SyntaxErrorException;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Parser\Buffer;
-use MtHaml\Node\Doctype;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttribute;
+use MtHaml\Indentation\IndentationException;
 use MtHaml\Node\Comment;
-use MtHaml\Node\Insert;
-use MtHaml\Node\Text;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\Run;
-use MtHaml\Node\Statement;
+use MtHaml\Node\Doctype;
 use MtHaml\Node\Filter;
+use MtHaml\Node\Insert;
+use MtHaml\Node\InterpolatedString;
+use MtHaml\Node\NodeAbstract;
 use MtHaml\Node\ObjectRefClass;
 use MtHaml\Node\ObjectRefId;
+use MtHaml\Node\Run;
+use MtHaml\Node\Statement;
+use MtHaml\Node\Tag;
+use MtHaml\Node\TagAttribute;
 use MtHaml\Node\TagAttributeInterpolation;
 use MtHaml\Node\TagAttributeList;
-use MtHaml\Indentation\IndentationException;
-use MtHaml\TreeBuilder;
+use MtHaml\Node\Text;
+use MtHaml\Parser\Buffer;
 
 /**
  * MtHaml Parser
@@ -48,7 +49,7 @@ class Parser
 
     public function __construct()
     {
-        $this->treeBuilder = new TreeBuilder;
+        $this->treeBuilder = new TreeBuilder();
         $this->indent = new Indentation\Undefined();
         $this->prevIndent = $this->indent;
     }
@@ -86,7 +87,7 @@ class Parser
 
         try {
             $this->treeBuilder->addChild($level, $node);
-        } catch(TreeBuilderException $e) {
+        } catch (TreeBuilderException $e) {
             throw $this->syntaxError($buf, $e->getMessage());
         }
     }
@@ -134,7 +135,9 @@ class Parser
                 $buf->nextLine();
                 continue;
             }
-            if (!$this->isMultiline($next)) break;
+            if (!$this->isMultiline($next)) {
+                break;
+            }
             $line .= substr(trim($next), 0, -1);
             $buf->nextLine();
         }
@@ -368,32 +371,32 @@ class Parser
 
         while (true) {
             switch ($buf->peekChar()) {
-            case '{':
-                if ($hasRubyAttrs) {
+                case '{':
+                    if ($hasRubyAttrs) {
+                        break 2;
+                    }
+                    $hasRubyAttrs = true;
+                    $newAttrs = $this->parseTagAttributesRuby($buf);
+                    $attrs = array_merge($attrs, $newAttrs);
+                    break;
+                case '(':
+                    if ($hasHtmlAttrs) {
+                        break 2;
+                    }
+                    $hasHtmlAttrs = true;
+                    $newAttrs = $this->parseTagAttributesHtml($buf);
+                    $attrs = array_merge($attrs, $newAttrs);
+                    break;
+                case '[':
+                    if ($hasObjectRef) {
+                        break 2;
+                    }
+                    $hasObjectRef = true;
+                    $newAttrs = $this->parseTagAttributesObject($buf);
+                    $attrs = array_merge($attrs, $newAttrs);
+                    break;
+                default:
                     break 2;
-                }
-                $hasRubyAttrs = true;
-                $newAttrs = $this->parseTagAttributesRuby($buf);
-                $attrs = array_merge($attrs, $newAttrs);
-                break;
-            case '(':
-                if ($hasHtmlAttrs) {
-                    break 2;
-                }
-                $hasHtmlAttrs = true;
-                $newAttrs = $this->parseTagAttributesHtml($buf);
-                $attrs = array_merge($attrs, $newAttrs);
-                break;
-            case '[':
-                if ($hasObjectRef) {
-                    break 2;
-                }
-                $hasObjectRef = true;
-                $newAttrs = $this->parseTagAttributesObject($buf);
-                $attrs = array_merge($attrs, $newAttrs);
-                break;
-            default:
-                break 2;
             }
         }
 
@@ -435,7 +438,7 @@ class Parser
             return new TagAttributeInterpolation($expr->getPosition(), $expr);
         }
 
-        list ($name, $ruby19) = $this->parseTagAttributeNameRuby($buf);
+        list($name, $ruby19) = $this->parseTagAttributeNameRuby($buf);
 
         $buf->skipWs();
 
@@ -568,7 +571,7 @@ class Parser
 
         } while (true);
 
-        list ($object, $prefix) = array_pad($nodes, 2, null);
+        list($object, $prefix) = array_pad($nodes, 2, null);
 
         if (!$object) {
             return $attrs;
@@ -820,7 +823,7 @@ class Parser
         } else {
             $unexpected = 'end of line';
         }
-        $msg = sprintf("Unexpected %s, expected %s", $unexpected, $expected);
+        $msg = sprintf('Unexpected %s, expected %s', $unexpected, $expected);
         return $this->syntaxError($buf, $msg);
     }
 
@@ -829,8 +832,13 @@ class Parser
         $this->column = $buf->getColumn();
         $this->lineno = $buf->getLineno();
 
-        $msg = sprintf('%s in %s on line %d, column %d',
-            $msg, $this->filename, $this->lineno, $this->column);
+        $msg = sprintf(
+            '%s in %s on line %d, column %d',
+            $msg,
+            $this->filename,
+            $this->lineno,
+            $this->column
+        );
 
         return new SyntaxErrorException($msg);
     }

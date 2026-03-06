@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Support\Php;
 
 use MtHaml\Environment;
@@ -68,8 +70,8 @@ class Executor
     {
         if (!file_exists($file)) {
             throw new Exception(sprintf(
-                "File does not exist: `%s`"
-                , $file
+                'File does not exist: `%s`',
+                $file
             ));
         }
 
@@ -92,8 +94,8 @@ class Executor
 
             if (false === $hamlCode) {
                 throw new Exception(sprintf(
-                    "Failed reading file: `%s`"
-                    , $file
+                    'Failed reading file: `%s`',
+                    $file
                 ));
             }
 
@@ -132,16 +134,16 @@ PHP;
         if (!is_dir($dir)) {
             if (!mkdir($dir, 0777, true)) {
                 throw new Exception(sprintf(
-                    "Failed creating cache directory: `%s`"
-                    , $dir
+                    'Failed creating cache directory: `%s`',
+                    $dir
                 ));
             }
         }
 
         if (!is_writeable($dir)) {
             throw new Exception(sprintf(
-                "Cache directory is not writeable: `%s`"
-                , $dir
+                'Cache directory is not writeable: `%s`',
+                $dir
             ));
         }
 
@@ -149,23 +151,23 @@ PHP;
 
         if (false === file_put_contents($tmpFile, $contents)) {
             throw new Exception(sprintf(
-                "Failed writing cache file: `%s`"
-                , $tmpFile
+                'Failed writing cache file: `%s`',
+                $tmpFile
             ));
         }
 
         if (!rename($tmpFile, $cacheFile)) {
             @unlink($tmpFile);
             throw new Exception(sprintf(
-                "Failed writing cache file: `%s`"
-                , $cacheFile
+                'Failed writing cache file: `%s`',
+                $cacheFile
             ));
         }
 
         if (!touch($cacheFile, $timestamp)) {
             throw new Exception(sprintf(
-                "Failed writing cache file: `%s`"
-                , $cacheFile
+                'Failed writing cache file: `%s`',
+                $cacheFile
             ));
         }
 

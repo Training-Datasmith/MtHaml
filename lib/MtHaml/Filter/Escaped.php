@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter;
 
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-use MtHaml\Node\Filter;
 use MtHaml\Node\EscapableAbstract;
+use MtHaml\Node\Filter;
+use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 
 class Escaped extends Plain
 {

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Target;
 
-use MtHaml\NodeVisitor\TwigRenderer;
 use MtHaml\Environment;
+use MtHaml\NodeVisitor\TwigRenderer;
 
 class Twig extends TargetAbstract
 {

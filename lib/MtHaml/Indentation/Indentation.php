@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Indentation;
 
 class Indentation implements IndentationInterface
@@ -65,7 +67,7 @@ class Indentation implements IndentationInterface
         }
 
         if (' ' !== $char && "\t" !== $char) {
-            throw new IndentationException("Indentation can use only tabs or spaces");
+            throw new IndentationException('Indentation can use only tabs or spaces');
         }
 
         return $char;

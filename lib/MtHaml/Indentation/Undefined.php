@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Indentation;
 
 class Undefined implements IndentationInterface
@@ -37,4 +39,3 @@ class Undefined implements IndentationInterface
         return '';
     }
 }
-

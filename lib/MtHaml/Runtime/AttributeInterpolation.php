@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Runtime;
 
 class AttributeInterpolation
@@ -8,7 +10,7 @@ class AttributeInterpolation
 
     public static function create($value)
     {
-        $instance = new AttributeInterpolation;
+        $instance = new AttributeInterpolation();
         $instance->value = $value;
 
         return $instance;

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests\NodeVisitor;
 
-use MtHaml\NodeVisitor\PhpRenderer;
 use MtHaml\Environment;
 use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\Text;
+use MtHaml\NodeVisitor\PhpRenderer;
 
 class PhpRendererTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,37 +24,37 @@ class PhpRendererTest extends \PHPUnit_Framework_TestCase
 
     public function getTestTrimInlineCommentsData()
     {
-        return array(
-            'no comments' => array('1 + 2', '1 + 2'),
-            '# comment' => array('1 + 2', '1 + 2 # comment'),
-            '// comment' => array('1 + 2', '1 + 2 // comment'),
-            'comment without whitespace' => array('1 + 2', '1 + 2// comment'),
+        return [
+            'no comments' => ['1 + 2', '1 + 2'],
+            '# comment' => ['1 + 2', '1 + 2 # comment'],
+            '// comment' => ['1 + 2', '1 + 2 // comment'],
+            'comment without whitespace' => ['1 + 2', '1 + 2// comment'],
 
-            'double quoted string' => array(
-                '"foo"', '"foo" # bar'
-            ),
-            'double quoted string with escapes' => array(
-                '"f\\\\o\\"o\n"', '"f\\\\o\\"o\n" # bar'
-            ),
-            'single quoted string' => array(
-                '\'foo\'', '\'foo\' # bar'
-            ),
-            'single quoted string with escapes' => array(
-                '\'f\\\\o\\\'o\'', '\'f\\\\o\\\'o\' # bar'
-            ),
-            'backticks string' => array(
-                '`foo`', '`foo` # bar'
-            ),
-            'backticks string with escapes' => array(
-                '`f\\\\o\\`o`', '`f\\\\o\\`o` # bar'
-            ),
-            'double quoted string with #' => array(
-                '"fo#o"', '"fo#o" # bar'
-            ),
-            '# in comment' => array(
-                '"foo"', '"foo" # b # a # r'
-            ),
-        );
+            'double quoted string' => [
+                '"foo"', '"foo" # bar',
+            ],
+            'double quoted string with escapes' => [
+                '"f\\\\o\\"o\n"', '"f\\\\o\\"o\n" # bar',
+            ],
+            'single quoted string' => [
+                '\'foo\'', '\'foo\' # bar',
+            ],
+            'single quoted string with escapes' => [
+                '\'f\\\\o\\\'o\'', '\'f\\\\o\\\'o\' # bar',
+            ],
+            'backticks string' => [
+                '`foo`', '`foo` # bar',
+            ],
+            'backticks string with escapes' => [
+                '`f\\\\o\\`o`', '`f\\\\o\\`o` # bar',
+            ],
+            'double quoted string with #' => [
+                '"fo#o"', '"fo#o" # bar',
+            ],
+            '# in comment' => [
+                '"foo"', '"foo" # b # a # r',
+            ],
+        ];
     }
 
     /** @dataProvider getPhpOpenTagsAreEscapedData */
@@ -73,41 +75,41 @@ class PhpRendererTest extends \PHPUnit_Framework_TestCase
 
     public function getPhpOpenTagsAreEscapedData()
     {
-        $pos = array(0, 0);
+        $pos = [0, 0];
 
-        return array(
-            'middle' => array(
+        return [
+            'middle' => [
                 'expect' => "foo <?php echo '<?'; ?> bar",
                 'node' => function () use ($pos) {
-                    return new Text($pos, "foo <? bar");
+                    return new Text($pos, 'foo <? bar');
                 },
-            ),
-            '? leading in node, not preceeded by <' => array(
-                'expect' => "foo ? bar",
+            ],
+            '? leading in node, not preceeded by <' => [
+                'expect' => 'foo ? bar',
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, 'foo '),
                         new Text($pos, '? bar'),
-                    ));
+                    ]);
                 },
-            ),
-            '? leading in node, preceeded by <' => array(
+            ],
+            '? leading in node, preceeded by <' => [
                 'expect' => "foo <<?php echo '?'; ?> bar",
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, 'foo <'),
                         new Text($pos, '? bar'),
-                    ));
+                    ]);
                 },
-            ),
-            '? leading in node, globally leading' => array(
+            ],
+            '? leading in node, globally leading' => [
                 'expect' => "<?php echo '?'; ?> bar",
                 'nodes' => function () use ($pos) {
-                    return new InterpolatedString($pos, array(
+                    return new InterpolatedString($pos, [
                         new Text($pos, '? bar'),
-                    ));
+                    ]);
                 },
-            ),
-        );
+            ],
+        ];
     }
 }

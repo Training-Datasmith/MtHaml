@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
+use MtHaml\Node\Insert;
+use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\Tag;
 use MtHaml\Node\TagAttribute;
 use MtHaml\Node\Text;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\Insert;
 
 class MergeAttrs extends NodeVisitorAbstract
 {

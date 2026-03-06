@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 use MtHaml\NodeVisitor\Printer;
@@ -15,12 +17,12 @@ class NodeVisitorsTest extends TestCase
         $parts = $this->parseTestFile($file);
 
         try {
-            $parser = new Parser;
+            $parser = new Parser();
             $node = $parser->parse($parts['HAML'], $file, 2);
 
             eval($parts['FILE']);
 
-            $renderer = new Printer;
+            $renderer = new Printer();
             $node->accept($renderer);
         } catch (\Exception $e) {
             return $this->assertException($parts, $e);
@@ -38,7 +40,7 @@ class NodeVisitorsTest extends TestCase
     public function getAutocloseFixtures()
     {
         return array_map(function ($file) {
-            return array($file);
+            return [$file];
         }, glob(__DIR__ . '/fixtures/nodevisitors/*.test'));
     }
 }

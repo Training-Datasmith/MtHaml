@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests\Support\Php;
 
 use MtHaml\Support\Php\Executor;
@@ -33,13 +35,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ->with("%p= 6 * \$var\n", $tpl)
             ->will($this->returnValue('<p><?php echo 6 * $var; ?></p>'));
 
-        $executor = new Executor($env, array(
+        $executor = new Executor($env, [
             'cache' => $this->cacheDir,
-        ));
+        ]);
 
-        $vars = array(
+        $vars = [
             'var' => 7,
-        );
+        ];
         $result = $executor->render($tpl, $vars);
 
         $this->assertSame('<p>42</p>', $result);
@@ -49,8 +51,8 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     {
         if (!is_dir($root) || !is_writeable($root)) {
             throw new \Exception(sprintf(
-                "Cannot create directory at `%s`"
-                , $root
+                'Cannot create directory at `%s`',
+                $root
             ));
         }
 
@@ -62,8 +64,8 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         }
 
         throw new \Exception(sprintf(
-            "Failed creating temporary directory at `%s`"
-            , $root
+            'Failed creating temporary directory at `%s`',
+            $root
         ));
     }
 

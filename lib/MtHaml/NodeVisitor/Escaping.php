@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
-use MtHaml\Node\Text;
 use MtHaml\Node\Insert;
-use MtHaml\Node\TagAttribute;
-use MtHaml\Node\NodeAbstract;
 use MtHaml\Node\InterpolatedString;
+use MtHaml\Node\NodeAbstract;
+use MtHaml\Node\TagAttribute;
+use MtHaml\Node\Text;
 
 class Escaping extends NodeVisitorAbstract
 {
     /** do not auto-escape */
-    const ESCAPE_FALSE = 1;
+    public const ESCAPE_FALSE = 1;
 
     /** do auto-escape */
-    const ESCAPE_TRUE = 2;
+    public const ESCAPE_TRUE = 2;
 
     /** do auto-escape, but do not double-escape entities (haml compat) */
-    const ESCAPE_ONCE = 3;
+    public const ESCAPE_ONCE = 3;
 
     protected $escapeHtml;
     protected $escapeAttrs;

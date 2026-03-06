@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\NodeVisitor;
 
-use MtHaml\Node\Root;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttribute;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Text;
-use MtHaml\Node\Insert;
-use MtHaml\Node\Run;
-use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\Comment;
 use MtHaml\Node\Doctype;
 use MtHaml\Node\Filter;
+use MtHaml\Node\Insert;
+use MtHaml\Node\InterpolatedString;
 use MtHaml\Node\ObjectRefClass;
 use MtHaml\Node\ObjectRefId;
+use MtHaml\Node\Root;
+use MtHaml\Node\Run;
+use MtHaml\Node\Statement;
+use MtHaml\Node\Tag;
+use MtHaml\Node\TagAttribute;
+use MtHaml\Node\Text;
 
 class Printer extends NodeVisitorAbstract
 {
@@ -110,7 +112,7 @@ class Printer extends NodeVisitorAbstract
 
     public function leaveTag(Tag $node)
     {
-        $this->undent()->write(')', $node->hasAttributes()||$node->hasChilds());
+        $this->undent()->write(')', $node->hasAttributes() || $node->hasChilds());
     }
 
     public function enterTagAttribute(TagAttribute $node)
@@ -234,7 +236,7 @@ class Printer extends NodeVisitorAbstract
 
     public function enterFilter(Filter $node)
     {
-       $this->write('filter(' . $node->getFilter())->indent();
+        $this->write('filter(' . $node->getFilter())->indent();
     }
 
     public function leaveFilter(Filter $node)

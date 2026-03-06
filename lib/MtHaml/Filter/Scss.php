@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter;
 
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 use MtHaml\Node\Filter;
+use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 
 class Scss extends AbstractFilter
 {
@@ -14,7 +16,10 @@ class Scss extends AbstractFilter
         if (!is_object($scss) || (!is_a($scss, 'Leafo\ScssPhp\Compiler') && !is_a($scss, 'scssc'))) {
             throw new \InvalidArgumentException(sprintf(
                 'Argument 1 passed to %s::__construct() must be an instance of %s or %s, %s given',
-                __CLASS__, 'Leafo\ScssPhp\Compiler', 'scssc', is_object($scss) ? 'instance of '.get_class($scss) : gettype($scss)
+                __CLASS__,
+                'Leafo\ScssPhp\Compiler',
+                'scssc',
+                is_object($scss) ? 'instance of '.get_class($scss) : gettype($scss)
             ));
         }
 

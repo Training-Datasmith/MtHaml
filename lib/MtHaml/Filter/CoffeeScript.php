@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Filter;
 
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-use MtHaml\Node\Filter;
 use CoffeeScript\Compiler;
+use MtHaml\Node\Filter;
+use MtHaml\NodeVisitor\RendererAbstract as Renderer;
 
 class CoffeeScript extends AbstractFilter
 {

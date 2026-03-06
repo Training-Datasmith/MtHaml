@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 require_once __DIR__ . '/TestCase.php';
@@ -66,7 +68,7 @@ class EnvironmentTest extends TestCase
         }
 
         return array_map(function ($file) {
-            return array($file);
+            return [$file];
         }, array_combine($files, $files));
     }
 }

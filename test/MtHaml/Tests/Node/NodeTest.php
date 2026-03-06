@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests\Node;
 
 use MtHaml\Node\Tag;
@@ -8,16 +10,16 @@ class NodeTest extends \PHPUnit_Framework_TestCase
 {
     protected function createNodes()
     {
-        $node = new Tag(array(), 'div', array());
+        $node = new Tag([], 'div', []);
         $this->assertFalse($node->hasChilds());
 
-        $nodeB = new Tag(array(), 'div', array());
+        $nodeB = new Tag([], 'div', []);
         $node->addChild($nodeB);
 
         $this->assertTrue($node->hasChilds());
         $this->assertSame($node, $nodeB->getParent());
 
-        $nodeC = new Tag(array(), 'div', array());
+        $nodeC = new Tag([], 'div', []);
         $node->addChild($nodeC);
         $this->assertSame(2, count($node->getChilds()));
 
@@ -29,7 +31,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($nodeB, $nodeC->getPreviousSibling());
         $this->assertSame(null, $nodeC->getNextSibling());
 
-        $nodeD = new Tag(array(), 'div', array());
+        $nodeD = new Tag([], 'div', []);
         $node->addChild($nodeD);
 
         $this->assertSame($nodeB, $nodeC->getPreviousSibling());

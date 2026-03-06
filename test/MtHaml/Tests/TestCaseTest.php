@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
 require_once __DIR__ . '/TestCase.php';
@@ -8,7 +10,7 @@ class TestCaseTest extends TestCase
 {
     public function testAssertExceptionReturnsIfNothingExceptedAndThrown()
     {
-        $this->assertException(array(), null);
+        $this->assertException([], null);
     }
 
     /**
@@ -16,8 +18,8 @@ class TestCaseTest extends TestCase
      */
     public function testAssertExceptionThrowsIfNothingExpectedButThrown()
     {
-        $e = new \LogicException;
-        $this->assertException(array(), $e);
+        $e = new \LogicException();
+        $this->assertException([], $e);
     }
 
     /**
@@ -26,7 +28,7 @@ class TestCaseTest extends TestCase
      */
     public function testAssertExceptionFailsIfExpectedButNothingThrown()
     {
-        $this->assertException(array('EXCEPTION' => "Foo\n"), null);
+        $this->assertException(['EXCEPTION' => "Foo\n"], null);
     }
 
     /**
@@ -34,8 +36,8 @@ class TestCaseTest extends TestCase
      */
     public function testAssertExceptionThrowsIfWrongExceptionClass()
     {
-        $e = new \LogicException;
-        $this->assertException(array('EXCEPTION' => "Foo\n"), $e);
+        $e = new \LogicException();
+        $this->assertException(['EXCEPTION' => "Foo\n"], $e);
     }
 
     /**
@@ -45,6 +47,6 @@ class TestCaseTest extends TestCase
     public function testAssertExceptionFailsIfMessageDoesNotMatch()
     {
         $e = new \Exception('foo');
-        $this->assertException(array('EXCEPTION' => "Exception\nbar"), $e);
+        $this->assertException(['EXCEPTION' => "Exception\nbar"], $e);
     }
 }

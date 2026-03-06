@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MtHaml\Tests;
 
-use MtHaml\Parser;
 use MtHaml\NodeVisitor\Printer;
+use MtHaml\Parser;
 
 require_once __DIR__ . '/TestCase.php';
 
@@ -15,10 +17,10 @@ class ParserTest extends TestCase
         $parts = $this->parseTestFile($file);
 
         try {
-            $parser = new Parser;
+            $parser = new Parser();
             $node = $parser->parse($parts['HAML'], $file, 2);
 
-            $renderer = new Printer;
+            $renderer = new Printer();
             $node->accept($renderer);
         } catch (\Exception $e) {
             return $this->assertException($parts, $e);
@@ -41,7 +43,7 @@ class ParserTest extends TestCase
         }
 
         return array_map(function ($file) {
-            return array($file);
+            return [$file];
         }, $files);
     }
 }
