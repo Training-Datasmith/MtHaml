@@ -29,7 +29,7 @@ class Runtime
      */
     public static function renderAttributes($list, $format, $charset)
     {
-        $attributes = array();
+        $attributes = [];
 
         self::mergeAttributes($attributes, $list, $format);
 
@@ -54,17 +54,18 @@ class Runtime
         return $result;
     }
 
-    private static function mergeAttributes(&$dest, $list, $format)
+    private static function mergeAttributes(array &$dest, $list, $format)
     {
         foreach ($list as $item) {
 
             if ($item instanceof AttributeInterpolation) {
                 $dest[] = $item;
                 continue;
-            } elseif ($item instanceof AttributeList) {
-                $pairs = array();
+            }
+            if ($item instanceof AttributeList) {
+                $pairs = [];
                 foreach ($item->attributes as $name => $value) {
-                    $pairs[] = array($name, $value);
+                    $pairs[] = [$name, $value];
                 }
                 self::mergeAttributes($dest, $pairs, $format);
                 continue;
@@ -111,7 +112,7 @@ class Runtime
         }
     }
 
-    private static function renderDataAttributes(&$dest, $value, $prefix = 'data')
+    private static function renderDataAttributes(array &$dest, $value, string $prefix = 'data')
     {
         if (\is_array($value) || $value instanceof \Traversable) {
             foreach ($value as $subname => $subvalue) {
@@ -124,7 +125,7 @@ class Runtime
         }
     }
 
-    private static function renderJoinedValue($values, $separator)
+    private static function renderJoinedValue($values, string $separator)
     {
         $result = null;
 
@@ -158,7 +159,7 @@ class Runtime
         $class = self::getObjectRefClassString($object);
 
         if (false !== $prefix && null !== $prefix) {
-            $class = $prefix . '_' . $class;
+            return $prefix . '_' . $class;
         }
 
         return $class;
@@ -172,9 +173,9 @@ class Runtime
 
         $id = null;
 
-        if (\is_callable(array($object, 'getId'))) {
+        if (\is_callable([$object, 'getId'])) {
             $id = $object->getId();
-        } elseif (\is_callable(array($object, 'id'))) {
+        } elseif (\is_callable([$object, 'id'])) {
             $id = $object->id();
         }
 
@@ -185,7 +186,7 @@ class Runtime
         $id = self::getObjectRefClassString($object) . '_' . $id;
 
         if (false !== $prefix && null !== $prefix) {
-            $id = $prefix . '_' . $id;
+            return $prefix . '_' . $id;
         }
 
         return $id;
@@ -203,7 +204,7 @@ class Runtime
 
     public static function getObjectRefName($object)
     {
-        return \is_callable(array($object, 'hamlObjectRef'))
+        return \is_callable([$object, 'hamlObjectRef'])
             ? $object->hamlObjectRef()
             : \get_class($object);
     }

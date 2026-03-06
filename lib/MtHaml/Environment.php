@@ -12,18 +12,18 @@ use MtHaml\Filter\FilterInterface;
 
 class Environment
 {
-    protected $options = array(
+    protected $options = [
         'format' => 'html5',
         'enable_escaper' => true,
         'escape_html' => true,
         'escape_attrs' => true,
         'cdata' => true,
-        'autoclose' => array('meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'param', 'col', 'base'),
+        'autoclose' => ['meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'param', 'col', 'base'],
         'charset' => 'UTF-8',
         'enable_dynamic_attrs' => true,
-    );
+    ];
 
-    protected $filters = array(
+    protected $filters = [
         'css' => 'MtHaml\\Filter\\Css',
         'cdata' => 'MtHaml\\Filter\\Cdata',
         'escaped' => 'MtHaml\\Filter\\Escaped',
@@ -32,11 +32,11 @@ class Environment
         'plain' => 'MtHaml\\Filter\\Plain',
         'preserve' => 'MtHaml\\Filter\\Preserve',
         'twig' => 'MtHaml\\Filter\\Twig',
-    );
+    ];
 
     protected $target;
 
-    public function __construct($target, array $options = array(), $filters = array())
+    public function __construct($target, array $options = [], $filters = [])
     {
         $this->target = $target;
         $this->options = $options + $this->options;
@@ -53,9 +53,7 @@ class Environment
             $node->accept($visitor);
         }
 
-        $code = $target->compile($this, $node, $filename);
-
-        return $code;
+        return $target->compile($this, $node, $filename);
     }
 
     public function getOptions()
@@ -131,7 +129,7 @@ class Environment
 
     public function getVisitors()
     {
-        $visitors = array();
+        $visitors = [];
 
         $visitors[] = $this->getAutoclosevisitor();
         $visitors[] = $this->getMidblockVisitor();

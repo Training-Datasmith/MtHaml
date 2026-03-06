@@ -20,7 +20,7 @@ use MtHaml\Node\TagAttributeList;
 abstract class RendererAbstract extends NodeVisitorAbstract
 {
     protected $indent;
-    protected $savedIndent = array();
+    protected $savedIndent = [];
     protected $output = '';
     protected $lineno = 1;
     protected $lineOffset = 0;
@@ -30,7 +30,7 @@ abstract class RendererAbstract extends NodeVisitorAbstract
     protected $env;
     protected $charset = 'UTF-8';
 
-    protected $midblock = array(false);
+    protected $midblock = [false];
 
     /**
      * Whether echo mode is enabled
@@ -42,7 +42,7 @@ abstract class RendererAbstract extends NodeVisitorAbstract
      * argument passing).
      */
     protected $echoMode = true;
-    protected $echoModeStack = array();
+    protected $echoModeStack = [];
 
     public function __construct(Environment $env)
     {
@@ -264,7 +264,7 @@ abstract class RendererAbstract extends NodeVisitorAbstract
                 $string = $this->escapeHtml($string, !$once);
             }
 
-            $this->raw($string, array($this, 'escapeLanguage'));
+            $this->raw($string, [$this, 'escapeLanguage']);
         } else {
             $string = $this->stringLiteral($string);
             $this->raw($string);
@@ -289,7 +289,7 @@ abstract class RendererAbstract extends NodeVisitorAbstract
     public function enterDoctype(Doctype $node)
     {
         $doctype = $node->getDoctype($this->env->getOption('format'));
-        $this->write($doctype, true, true, array($this, 'escapeLanguage'));
+        $this->write($doctype, true, true, [$this, 'escapeLanguage']);
     }
 
     public function enterComment(Comment $comment)

@@ -13,7 +13,6 @@ class Comment extends NestAbstract
     protected $condition;
 
     /**
-     * @param array  $position
      * @param bool   $rendered  Whether the comment is rendered in the
      *                          HTML output (as a HTML comment).
      * @param string $condition IE condition. If not null, the HTML comment

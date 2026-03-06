@@ -15,7 +15,7 @@ class MergeAttrs extends NodeVisitorAbstract
 
     public function enterTagAttributes(Tag $node)
     {
-        $this->attrs = array();
+        $this->attrs = [];
         $this->tag = $node;
 
         // Do not attempt to merge attributes if any attribute

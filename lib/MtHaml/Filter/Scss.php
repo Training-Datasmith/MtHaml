@@ -23,7 +23,7 @@ class Scss extends AbstractFilter
 
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
-        $renderer->write($this->filter($this->getContent($node), array(), $options));
+        $renderer->write($this->filter($this->getContent($node), [], $options));
     }
 
     public function filter($content, array $context, $options)

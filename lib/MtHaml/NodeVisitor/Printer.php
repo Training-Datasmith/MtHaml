@@ -53,7 +53,7 @@ class Printer extends NodeVisitorAbstract
         return $this;
     }
 
-    protected function raw($string)
+    protected function raw(string $string)
     {
         $this->output .= $string;
 

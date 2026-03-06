@@ -56,7 +56,6 @@ class Parser
     /**
      * Updates the indentation state
      *
-     * @param Buffer $buf
      * @param string $indent The indentation characters of the current line
      */
     private function updateIndent(Buffer $buf, $indent)
@@ -79,7 +78,6 @@ class Parser
      *
      * Inserts a new $node in the tree
      *
-     * @param Buffer       $buf
      * @param NodeAbstract $node Node to insert in the tree
      */
     public function processStatement(Buffer $buf, NodeAbstract $node)
@@ -120,8 +118,6 @@ class Parser
      * Any line terminated by ` |` is concatenated with the following lines
      * also terminated by ` |`. Empty or whitespace-only lines are ignored. The
      * current line is replaced by the resulting line in $buf.
-     *
-     * @param Buffer $buf
      */
     public function handleMultiline(Buffer $buf)
     {
@@ -174,23 +170,21 @@ class Parser
     {
         if (null !== $node = $this->parseTag($buf)) {
             return $node;
-
-        } elseif (null !== $node = $this->parseFilter($buf)) {
+        }
+        if (null !== $node = $this->parseFilter($buf)) {
             return $node;
-
-        } elseif (null !== $comment = $this->parseComment($buf)) {
+        }
+        if (null !== $comment = $this->parseComment($buf)) {
             return $comment;
-
-        } else if (null !== $run = $this->parseRun($buf)) {
+        }
+        if (null !== $run = $this->parseRun($buf)) {
             return $run;
-
-        } elseif (null !== $doctype = $this->parseDoctype($buf)) {
+        }
+        if (null !== $doctype = $this->parseDoctype($buf)) {
             return $doctype;
-
-        } else {
-            if (null !== $node = $this->parseNestableStatement($buf)) {
-                return new Statement($node->getPosition(), $node);
-            }
+        }
+        if (null !== $node = $this->parseNestableStatement($buf)) {
+            return new Statement($node->getPosition(), $node);
         }
     }
 
@@ -208,9 +202,8 @@ class Parser
 
             $type = empty($match['type']) ? null : $match['type'];
             $options = empty($match['options']) ? null : $match['options'];
-            $node = new Doctype($match['pos'][0], $type, $options);
 
-            return $node;
+            return new Doctype($match['pos'][0], $type, $options);
         }
     }
 
@@ -350,7 +343,7 @@ class Parser
 
     protected function parseTagAttributes(Buffer $buf)
     {
-        $attrs = array();
+        $attrs = [];
 
         // short notation for classes and ids
 
@@ -409,7 +402,7 @@ class Parser
 
     protected function parseTagAttributesRuby(Buffer $buf)
     {
-        $attrs = array();
+        $attrs = [];
 
         if ($buf->match('/\{\s*/')) {
             do {
@@ -459,18 +452,17 @@ class Parser
     {
         try {
             if ($name = $this->parseTagAttributeNameRuby19($buf)) {
-                return array($name, true);
+                return [$name, true];
             }
 
-            return array($this->parseAttrExpression($buf, '=,'), false);
+            return [$this->parseAttrExpression($buf, '=,'), false];
         } catch (SyntaxErrorException $e) {
             // Allow line break after comma
             if ($buf->match('/,\s*$/', $match, false) && $buf->hasNextLine()) {
                 $buf->mergeNextLine();
                 return $this->parseTagAttributeNameRuby($buf);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 
@@ -490,9 +482,8 @@ class Parser
             if ($buf->match('/,\s*$/', $match, false) && $buf->hasNextLine()) {
                 $buf->mergeNextLine();
                 return $this->parseTagAttributeValueRuby($buf);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 
@@ -502,7 +493,7 @@ class Parser
             return null;
         }
 
-        $attrs = array();
+        $attrs = [];
 
         do {
 
@@ -552,8 +543,8 @@ class Parser
 
     protected function parseTagAttributesObject(Buffer $buf)
     {
-        $nodes = array();
-        $attrs = array();
+        $nodes = [];
+        $attrs = [];
 
         if (!$buf->match('/\[\s*/A', $match)) {
             return $attrs;
@@ -658,7 +649,7 @@ class Parser
             )+)/xA";
 
         if ($buf->match($re, $match)) {
-            return array($match[0], $match['pos'][0]);
+            return [$match[0], $match['pos'][0]];
         }
 
         throw $this->syntaxErrorExpected($buf, 'target language expression');

@@ -90,14 +90,13 @@ class Loader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface, \Twi
     {
         if ($this->loader instanceof \Twig_ExistsLoaderInterface) {
             return $this->loader->exists($name);
-        } else {
-            try {
-                $this->loader->getSource($name);
+        }
+        try {
+            $this->loader->getSource($name);
 
-                return true;
-            } catch (\Twig_Error_Loader $e) {
-                return false;
-            }
+            return true;
+        } catch (\Twig_Error_Loader $e) {
+            return false;
         }
     }
 }

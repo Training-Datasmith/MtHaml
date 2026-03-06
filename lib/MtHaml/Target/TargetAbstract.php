@@ -8,7 +8,7 @@ use MtHaml\Parser;
 
 abstract class TargetAbstract implements TargetInterface
 {
-    protected $options = array();
+    protected $options = [];
     protected $parserFactory;
     protected $rendererFactory;
 
@@ -73,7 +73,7 @@ abstract class TargetAbstract implements TargetInterface
 
     public function compile(Environment $env, NodeAbstract $node)
     {
-        $renderer = $this->createRenderer($env, array());
+        $renderer = $this->createRenderer($env, []);
 
         $node->accept($renderer);
 

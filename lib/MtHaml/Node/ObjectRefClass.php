@@ -9,7 +9,7 @@ class ObjectRefClass extends NodeAbstract
     protected $object;
     protected $prefix;
 
-    public function __construct($position, NodeAbstract $object, NodeAbstract $prefix = null)
+    public function __construct(array $position, NodeAbstract $object, NodeAbstract $prefix = null)
     {
         parent::__construct($position);
         $this->object = $object;

@@ -27,7 +27,7 @@ abstract class OptimizableFilter extends AbstractFilter
 
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
-        $inserts = array();
+        $inserts = [];
         $content = '';
         foreach ($node->getChilds() as $child) {
             foreach ($child->getContent()->getChilds() as $item) {
@@ -42,15 +42,15 @@ abstract class OptimizableFilter extends AbstractFilter
             $content .= "\n";
         }
 
-        $string = new InterpolatedString(array());
-        $result = $this->filter($content, array(), array());
+        $string = new InterpolatedString([]);
+        $result = $this->filter($content, [], []);
         foreach ($inserts as $hash => $insert) {
             $parts = explode($hash, $result, 2);
-            $string->addChild(new Text(array(), $parts[0]));
+            $string->addChild(new Text([], $parts[0]));
             $string->addChild($insert);
             $result = $parts[1];
         }
-        $string->addChild(new Text(array(), $result));
+        $string->addChild(new Text([], $result));
         $string->accept($renderer);
     }
 

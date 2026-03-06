@@ -90,13 +90,13 @@ class Buffer
     public function match($pattern, &$match = null, $eat = true)
     {
         if ($count = preg_match($pattern, $this->line, $match, PREG_OFFSET_CAPTURE)) {
-            $pos = array();
+            $pos = [];
 
             foreach ($match as $key => &$capture) {
-                $pos[$key] = array(
+                $pos[$key] = [
                     'lineno' => $this->lineno,
                     'column' => $capture[1],
-                );
+                ];
                 $capture = $capture[0];
             }
             unset($capture); // ref
@@ -134,10 +134,10 @@ class Buffer
 
     public function getPosition()
     {
-        return array(
+        return [
             'lineno' => $this->lineno,
             'column' => $this->column,
-        );
+        ];
     }
 
     public function getLine()

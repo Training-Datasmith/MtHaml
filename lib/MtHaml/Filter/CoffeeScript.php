@@ -11,7 +11,7 @@ class CoffeeScript extends AbstractFilter
     private $coffeescript;
     private $options;
 
-    public function __construct(Compiler $coffeescript, array $options = array())
+    public function __construct(Compiler $coffeescript, array $options = [])
     {
         $this->coffeescript = $coffeescript;
         $this->options = $options;
@@ -19,7 +19,7 @@ class CoffeeScript extends AbstractFilter
 
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
-        $renderer->write($this->filter($this->getContent($node), array(), $options));
+        $renderer->write($this->filter($this->getContent($node), [], $options));
     }
 
     public function filter($content, array $context, $options)

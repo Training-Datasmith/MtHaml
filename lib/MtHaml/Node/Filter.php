@@ -6,7 +6,7 @@ use MtHaml\NodeVisitor\NodeVisitorInterface;
 
 class Filter extends NodeAbstract
 {
-    private $childs = array();
+    private $childs = [];
     private $filter;
 
     public function __construct(array $position, $filter)

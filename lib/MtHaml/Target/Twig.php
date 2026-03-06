@@ -7,11 +7,11 @@ use MtHaml\Environment;
 
 class Twig extends TargetAbstract
 {
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
-        parent::__construct($options + array(
+        parent::__construct($options + [
             'midblock_regex' => '/(?:-\s*)?(?:else\b|elseif\b)/A',
-        ));
+        ]);
     }
 
     public function getDefaultRendererFactory()

@@ -8,7 +8,7 @@ use MtHaml\NodeVisitor\NodeVisitorInterface;
 abstract class NestAbstract extends NodeAbstract implements NestInterface
 {
     private $content;
-    private $childs = array();
+    private $childs = [];
 
     public function addChild(NodeAbstract $node)
     {
@@ -28,7 +28,7 @@ abstract class NestAbstract extends NodeAbstract implements NestInterface
             $prev->setNextSibling($node);
         }
         $node->setPreviousSibling($prev);
-        $node->setNextSibling(null);
+        $node->setNextSibling();
     }
 
     public function removeChild(NodeAbstract $node)
@@ -49,9 +49,9 @@ abstract class NestAbstract extends NodeAbstract implements NestInterface
             $next->setPreviousSibling($prev);
         }
 
-        $node->setParent(null);
-        $node->setPreviousSibling(null);
-        $node->setNextSibling(null);
+        $node->setParent();
+        $node->setPreviousSibling();
+        $node->setNextSibling();
     }
 
     public function hasChilds()

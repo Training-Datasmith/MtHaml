@@ -8,7 +8,7 @@ class Root extends NestAbstract
 {
   public function __construct(array $position = null)
   {
-      parent::__construct($position ?: array('lineno' => 0, 'column' => 0));
+      parent::__construct($position ?: ['lineno' => 0, 'column' => 0]);
   }
 
   public function getNodeName()

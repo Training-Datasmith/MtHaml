@@ -14,7 +14,7 @@ class InterpolatedString extends NodeAbstract
 {
     protected $childs;
 
-    public function __construct(array $position, array $childs = array())
+    public function __construct(array $position, array $childs = [])
     {
         parent::__construct($position);
         $this->childs = $childs;

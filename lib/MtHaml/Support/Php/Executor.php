@@ -12,12 +12,12 @@ class Executor
 {
     private $environment;
 
-    private $options = array(
+    private $options = [
         // Cache directory to store compiled templates
         'cache' => null,
         // Whether to by-pass cache, useful when debugging
         'debug' => false,
-    );
+    ];
 
     public function __construct(Environment $environment, array $options)
     {

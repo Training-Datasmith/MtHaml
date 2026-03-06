@@ -27,7 +27,7 @@ class TreeBuilder
 
     public function __construct()
     {
-        $this->parentStack = array();
+        $this->parentStack = [];
         $this->parent = new Root();
     }
 
@@ -66,9 +66,8 @@ class TreeBuilder
     {
         if (count($this->parentStack) > 0) {
             return $this->parentStack[0];
-        } else {
-            return $this->parent;
         }
+        return $this->parent;
     }
 
     public function hasStatements()
