@@ -125,7 +125,7 @@ class TwigRenderer extends RendererAbstract
     {
         $this->raw(')');
 
-        $this->popEchoMode(true);
+        $this->popEchoMode();
         if ($this->isEchoMode()) {
             $this->raw(' }}');
         }
@@ -145,7 +145,7 @@ class TwigRenderer extends RendererAbstract
     {
         $this->raw(')');
 
-        $this->popEchoMode(true);
+        $this->popEchoMode();
         if ($this->isEchoMode()) {
             $this->raw(' }}');
         }

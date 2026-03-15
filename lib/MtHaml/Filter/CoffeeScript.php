@@ -27,7 +27,7 @@ class CoffeeScript extends AbstractFilter
     public function filter($content, array $context, $options)
     {
         if (isset($options['cdata']) && $options['cdata'] === true) {
-            return "<script type=\"text/javascript\">\n//<![CDATA[\n".$this->coffeescript->compile($content, $this->options)."\n//]]\n</script>";
+            return "<script type=\"text/javascript\">\n//<![CDATA[\n".$this->coffeescript->compile($content, $this->options)."\n//]]>\n</script>";
         }
 
         return "<script type=\"text/javascript\">\n".$this->coffeescript->compile($content, $this->options)."\n</script>";

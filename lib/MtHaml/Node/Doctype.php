@@ -52,7 +52,7 @@ class Doctype extends NodeAbstract
                 return '';
             }
             if (!empty($this->options)) {
-                return sprintf("<?xml version='1.0' encoding='%s' ?>", $this->options);
+                return sprintf("<?xml version='1.0' encoding='%s' ?>", htmlspecialchars($this->options, ENT_QUOTES, 'UTF-8'));
             }
             return "<?xml version='1.0' encoding='utf-8' ?>";
         }

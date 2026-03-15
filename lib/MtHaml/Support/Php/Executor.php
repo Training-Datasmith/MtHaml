@@ -120,7 +120,7 @@ class Executor
 
 function $funName(\$__variables)
 {
-    extract(\$__variables);
+    extract(\$__variables, EXTR_SKIP);
 ?>$code<?php
 }
 PHP;
@@ -132,7 +132,7 @@ PHP;
         $dir = dirname($cacheFile);
 
         if (!is_dir($dir)) {
-            if (!mkdir($dir, 0777, true)) {
+            if (!mkdir($dir, 0755, true)) {
                 throw new Exception(sprintf(
                     'Failed creating cache directory: `%s`',
                     $dir

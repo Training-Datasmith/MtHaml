@@ -36,7 +36,7 @@ abstract class OptimizableFilter extends AbstractFilter
                 if ($item instanceof Text) {
                     $content .= $item->getContent();
                 } else {
-                    $hash = md5(mt_rand());
+                    $hash = bin2hex(random_bytes(8));
                     $inserts[$hash] = $item;
                     $content .= $hash;
                 }

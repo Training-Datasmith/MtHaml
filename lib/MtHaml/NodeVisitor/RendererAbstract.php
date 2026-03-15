@@ -21,7 +21,7 @@ use MtHaml\Node\Text;
 
 abstract class RendererAbstract extends NodeVisitorAbstract
 {
-    protected $indent;
+    protected $indent = 0;
     protected $savedIndent = [];
     protected $output = '';
     protected $lineno = 1;

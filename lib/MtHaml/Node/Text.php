@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MtHaml\Node;
 
-use MtHaml\Nodevisitor\NodeVisitorInterface;
+use MtHaml\NodeVisitor\NodeVisitorInterface;
 
 class Text extends EscapableAbstract
 {

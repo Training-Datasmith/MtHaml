@@ -137,7 +137,7 @@ class PhpRenderer extends RendererAbstract
     {
         $this->raw(')');
 
-        $this->popEchoMode(true);
+        $this->popEchoMode();
         if ($this->isEchoMode()) {
             $this->raw('; ?>');
         }
@@ -157,7 +157,7 @@ class PhpRenderer extends RendererAbstract
     {
         $this->raw(')');
 
-        $this->popEchoMode(true);
+        $this->popEchoMode();
         if ($this->isEchoMode()) {
             $this->raw('; ?>');
         }

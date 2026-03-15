@@ -30,7 +30,7 @@ class Php extends AbstractFilter
     {
         $__content__ = '?><?php '.$content;
         unset($options, $content);
-        extract($context);
+        extract($context, EXTR_SKIP);
         ob_start();
         eval($__content__);
 

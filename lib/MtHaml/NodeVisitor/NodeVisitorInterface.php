@@ -25,7 +25,7 @@ interface NodeVisitorInterface
 {
     public function enterComment(Comment $node);
     public function enterCommentContent(Comment $node);
-    public function leaveCommentContent(comment $node);
+    public function leaveCommentContent(Comment $node);
     public function enterCommentChilds(Comment $node);
     public function leaveCommentChilds(Comment $node);
     public function leaveComment(Comment $node);

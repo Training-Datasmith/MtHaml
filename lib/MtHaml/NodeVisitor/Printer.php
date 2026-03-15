@@ -20,7 +20,7 @@ use MtHaml\Node\Text;
 
 class Printer extends NodeVisitorAbstract
 {
-    protected $indent;
+    protected $indent = 0;
     protected $output = '';
 
     public function getOutput()

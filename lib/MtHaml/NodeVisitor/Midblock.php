@@ -13,7 +13,6 @@ class Midblock extends NodeVisitorAbstract
     public function __construct($midblockRegex)
     {
         $this->midblockRegex = $midblockRegex;
-        $this->skip = new \SplObjectStorage();
     }
 
     public function enterRun(Run $node)

@@ -8,7 +8,7 @@ class Undefined implements IndentationInterface
 {
     public function newLevel($indent)
     {
-        if (0 == strlen($indent)) {
+        if (0 === strlen($indent)) {
             return $this;
         }
         return Indentation::oneLevel($indent);

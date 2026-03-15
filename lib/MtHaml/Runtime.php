@@ -42,13 +42,13 @@ class Runtime
                 $result .= ' ';
             }
             if ($value instanceof AttributeInterpolation) {
-                $result .= $value->value;
+                $result .= htmlspecialchars((string) $value->value, ENT_QUOTES, $charset);
             } elseif (true === $value) {
                 $result .= htmlspecialchars($name, ENT_QUOTES, $charset);
             } else {
                 $result .= htmlspecialchars($name, ENT_QUOTES, $charset)
                     .'="'
-                    . htmlspecialchars($value, ENT_QUOTES, $charset)
+                    . htmlspecialchars((string) $value, ENT_QUOTES, $charset)
                     .'"';
             }
         }
