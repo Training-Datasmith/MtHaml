@@ -1,99 +1,86 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Comment;
-use MtHaml\Node\Doctype;
-use MtHaml\Node\Filter;
-use MtHaml\Node\Insert;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Node\ObjectRefClass;
-use MtHaml\Node\ObjectRefId;
-use MtHaml\Node\Root;
-use MtHaml\Node\Run;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttribute;
-use MtHaml\Node\TagAttributeInterpolation;
-use MtHaml\Node\TagAttributeList;
-use MtHaml\Node\Text;
-
-interface NodeVisitorInterface
+use Mt_Haml\Node\Comment;
+use Mt_Haml\Node\Doctype;
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Insert;
+use Mt_Haml\Node\Interpolated_String;
+use Mt_Haml\Node\Node_Abstract;
+use Mt_Haml\Node\Object_Ref_Class;
+use Mt_Haml\Node\Object_Ref_Id;
+use Mt_Haml\Node\Root;
+use Mt_Haml\Node\Run;
+use Mt_Haml\Node\Statement;
+use Mt_Haml\Node\Tag;
+use Mt_Haml\Node\Tag_Attribute;
+use Mt_Haml\Node\Tag_Attribute_Interpolation;
+use Mt_Haml\Node\Tag_Attribute_List;
+use Mt_Haml\Node\Text;
+interface Node_Visitor_Interface
 {
-    public function enterComment(Comment $node);
-    public function enterCommentContent(Comment $node);
-    public function leaveCommentContent(Comment $node);
-    public function enterCommentChilds(Comment $node);
-    public function leaveCommentChilds(Comment $node);
-    public function leaveComment(Comment $node);
-
-    public function enterDoctype(Doctype $node);
-    public function leaveDoctype(Doctype $node);
-
-    public function enterInsert(Insert $node);
-    public function leaveInsert(Insert $node);
-
-    public function enterInterpolatedString(InterpolatedString $node);
-    public function enterInterpolatedStringChilds(InterpolatedString $node);
-    public function leaveInterpolatedStringChilds(InterpolatedString $node);
-    public function leaveInterpolatedString(InterpolatedString $node);
-
-    public function enterRoot(Root $node);
-    public function enterRootContent(Root $node);
-    public function leaveRootContent(Root $node);
-    public function enterRootChilds(Root $node);
-    public function leaveRootChilds(Root $node);
-    public function leaveRoot(Root $node);
-
-    public function enterRun(Run $node);
-    public function enterRunChilds(Run $node);
-    public function leaveRunChilds(Run $node);
-    public function enterRunMidblock(Run $node);
-    public function leaveRunMidblock(Run $node);
-    public function leaveRun(Run $node);
-
-    public function enterStatement(Statement $node);
-    public function enterStatementContent(Statement $node);
-    public function leaveStatementContent(Statement $node);
-    public function leaveStatement(Statement $node);
-
-    public function enterTag(Tag $node);
-    public function enterTagAttributes(Tag $node);
-    public function leaveTagAttributes(Tag $node);
-    public function enterTagContent(Tag $node);
-    public function leaveTagContent(Tag $node);
-    public function enterTagChilds(Tag $node);
-    public function leaveTagChilds(Tag $node);
-    public function leaveTag(Tag $node);
-
-    public function enterTagAttribute(TagAttribute $node);
-    public function enterTagAttributeName(TagAttribute $node);
-    public function leaveTagAttributeName(TagAttribute $node);
-    public function enterTagAttributeValue(TagAttribute $node);
-    public function leaveTagAttributeValue(TagAttribute $node);
-    public function enterTagAttributeInterpolation(TagAttributeInterpolation $node);
-    public function leaveTagAttributeInterpolation(TagAttributeInterpolation $node);
-    public function enterTagAttributeList(TagAttributeList $node);
-    public function leaveTagAttributeList(TagAttributeList $node);
-    public function leaveTagAttribute(TagAttribute $node);
-
-    public function enterObjectRefClass(ObjectRefClass $node);
-    public function leaveObjectRefClass(ObjectRefClass $node);
-    public function enterObjectRefId(ObjectRefId $node);
-    public function leaveObjectRefId(ObjectRefId $node);
-    public function enterObjectRefObject(NodeAbstract $node);
-    public function leaveObjectRefObject(NodeAbstract $node);
-    public function enterObjectRefPrefix(NodeAbstract $node);
-    public function leaveObjectRefPrefix(NodeAbstract $node);
-
-    public function enterText(Text $node);
-    public function leaveText(Text $node);
-
-    public function enterFilter(Filter $node);
-    public function enterFilterChilds(Filter $node);
-    public function leaveFilterChilds(Filter $node);
-    public function leaveFilter(Filter $node);
+    public function enter_comment(Comment $node);
+    public function enter_comment_content(Comment $node);
+    public function leave_comment_content(Comment $node);
+    public function enter_comment_childs(Comment $node);
+    public function leave_comment_childs(Comment $node);
+    public function leave_comment(Comment $node);
+    public function enter_doctype(Doctype $node);
+    public function leave_doctype(Doctype $node);
+    public function enter_insert(Insert $node);
+    public function leave_insert(Insert $node);
+    public function enter_interpolated_string(Interpolated_String $node);
+    public function enter_interpolated_string_childs(Interpolated_String $node);
+    public function leave_interpolated_string_childs(Interpolated_String $node);
+    public function leave_interpolated_string(Interpolated_String $node);
+    public function enter_root(Root $node);
+    public function enter_root_content(Root $node);
+    public function leave_root_content(Root $node);
+    public function enter_root_childs(Root $node);
+    public function leave_root_childs(Root $node);
+    public function leave_root(Root $node);
+    public function enter_run(Run $node);
+    public function enter_run_childs(Run $node);
+    public function leave_run_childs(Run $node);
+    public function enter_run_midblock(Run $node);
+    public function leave_run_midblock(Run $node);
+    public function leave_run(Run $node);
+    public function enter_statement(Statement $node);
+    public function enter_statement_content(Statement $node);
+    public function leave_statement_content(Statement $node);
+    public function leave_statement(Statement $node);
+    public function enter_tag(Tag $node);
+    public function enter_tag_attributes(Tag $node);
+    public function leave_tag_attributes(Tag $node);
+    public function enter_tag_content(Tag $node);
+    public function leave_tag_content(Tag $node);
+    public function enter_tag_childs(Tag $node);
+    public function leave_tag_childs(Tag $node);
+    public function leave_tag(Tag $node);
+    public function enter_tag_attribute(Tag_Attribute $node);
+    public function enter_tag_attribute_name(Tag_Attribute $node);
+    public function leave_tag_attribute_name(Tag_Attribute $node);
+    public function enter_tag_attribute_value(Tag_Attribute $node);
+    public function leave_tag_attribute_value(Tag_Attribute $node);
+    public function enter_tag_attribute_interpolation(Tag_Attribute_Interpolation $node);
+    public function leave_tag_attribute_interpolation(Tag_Attribute_Interpolation $node);
+    public function enter_tag_attribute_list(Tag_Attribute_List $node);
+    public function leave_tag_attribute_list(Tag_Attribute_List $node);
+    public function leave_tag_attribute(Tag_Attribute $node);
+    public function enter_object_ref_class(Object_Ref_Class $node);
+    public function leave_object_ref_class(Object_Ref_Class $node);
+    public function enter_object_ref_id(Object_Ref_Id $node);
+    public function leave_object_ref_id(Object_Ref_Id $node);
+    public function enter_object_ref_object(Node_Abstract $node);
+    public function leave_object_ref_object(Node_Abstract $node);
+    public function enter_object_ref_prefix(Node_Abstract $node);
+    public function leave_object_ref_prefix(Node_Abstract $node);
+    public function enter_text(Text $node);
+    public function leave_text(Text $node);
+    public function enter_filter(Filter $node);
+    public function enter_filter_childs(Filter $node);
+    public function leave_filter_childs(Filter $node);
+    public function leave_filter(Filter $node);
 }

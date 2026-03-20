@@ -1,88 +1,69 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Target;
 
-namespace MtHaml\Target;
-
-use MtHaml\Environment;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Parser;
-
-abstract class TargetAbstract implements TargetInterface
+use Mt_Haml\Environment;
+use Mt_Haml\Node\Node_Abstract;
+use Mt_Haml\Parser;
+abstract class Target_Abstract implements Target_Interface
 {
     protected $options = [];
-    protected $parserFactory;
-    protected $rendererFactory;
-
+    protected $parser_factory;
+    protected $renderer_factory;
     public function __construct(array $options)
     {
         $this->options = array_merge($this->options, $options);
     }
-
-    public function getDefaultParserFactory()
+    public function get_default_parser_factory()
     {
         return function (Environment $env, array $options) {
             return new Parser();
         };
     }
-
-    public function getParserFactory()
+    public function get_parser_factory()
     {
-        if (null === $this->parserFactory) {
-            $this->parserFactory = $this->getDefaultParserFactory();
+        if (null === $this->parser_factory) {
+            $this->parser_factory = $this->get_default_parser_factory();
         }
-
-        return $this->parserFactory;
+        return $this->parser_factory;
     }
-
-    public function setParserFactory($factory)
+    public function set_parser_factory($factory)
     {
-        $this->parserFactory = $factory;
+        $this->parser_factory = $factory;
     }
-
-    public function createParser(Environment $env, array $options)
+    public function create_parser(Environment $env, array $options)
     {
-        return call_user_func($this->getParserFactory(), $env, $options);
+        return call_user_func($this->get_parser_factory(), $env, $options);
     }
-
-    abstract public function getDefaultRendererFactory();
-
-    public function getRendererFactory()
+    abstract public function get_default_renderer_factory();
+    public function get_renderer_factory()
     {
-        if (null === $this->rendererFactory) {
-            $this->rendererFactory = $this->getDefaultRendererFactory();
+        if (null === $this->renderer_factory) {
+            $this->renderer_factory = $this->get_default_renderer_factory();
         }
-
-        return $this->rendererFactory;
+        return $this->renderer_factory;
     }
-
-    public function setRendererFactory($factory)
+    public function set_renderer_factory($factory)
     {
-        $this->rendererFactory = $factory;
+        $this->renderer_factory = $factory;
     }
-
-    public function createRenderer(Environment $env, array $options)
+    public function create_renderer(Environment $env, array $options)
     {
-        return call_user_func($this->getRendererFactory(), $env, $options);
+        return call_user_func($this->get_renderer_factory(), $env, $options);
     }
-
     public function parse(Environment $env, $string, $filename)
     {
-        $parser = $this->createParser($env, $this->options);
-
+        $parser = $this->create_parser($env, $this->options);
         return $parser->parse($string, $filename);
     }
-
-    public function compile(Environment $env, NodeAbstract $node)
+    public function compile(Environment $env, Node_Abstract $node)
     {
-        $renderer = $this->createRenderer($env, []);
-
+        $renderer = $this->create_renderer($env, []);
         $node->accept($renderer);
-
-        return $renderer->getOutput();
+        return $renderer->get_output();
     }
-
-    public function getOption($name)
+    public function get_option($name)
     {
         return $this->options[$name];
     }

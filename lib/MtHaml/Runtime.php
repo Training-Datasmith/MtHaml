@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml;
 
-namespace MtHaml;
-
-use MtHaml\Runtime\AttributeInterpolation;
-use MtHaml\Runtime\AttributeList;
-
+use Mt_Haml\Runtime\Attribute_Interpolation;
+use Mt_Haml\Runtime\Attribute_List;
 class Runtime
 {
     /**
@@ -29,56 +27,45 @@ class Runtime
      * @param string $format  Output format (e.g. html5)
      * @param string $charset Output charset
      */
-    public static function renderAttributes($list, $format, $charset)
+    public static function render_attributes($list, $format, $charset)
     {
         $attributes = [];
-
-        self::mergeAttributes($attributes, $list, $format);
-
+        self::merge_attributes($attributes, $list, $format);
         $result = null;
-
         foreach ($attributes as $name => $value) {
             if (null !== $result) {
                 $result .= ' ';
             }
-            if ($value instanceof AttributeInterpolation) {
+            if ($value instanceof Attribute_Interpolation) {
                 $result .= htmlspecialchars((string) $value->value, ENT_QUOTES, $charset);
             } elseif (true === $value) {
                 $result .= htmlspecialchars($name, ENT_QUOTES, $charset);
             } else {
-                $result .= htmlspecialchars($name, ENT_QUOTES, $charset)
-                    .'="'
-                    . htmlspecialchars((string) $value, ENT_QUOTES, $charset)
-                    .'"';
+                $result .= htmlspecialchars($name, ENT_QUOTES, $charset) . '="' . htmlspecialchars((string) $value, ENT_QUOTES, $charset) . '"';
             }
         }
-
         return $result;
     }
-
-    private static function mergeAttributes(array &$dest, $list, $format)
+    private static function merge_attributes(array &$dest, $list, $format)
     {
         foreach ($list as $item) {
-
-            if ($item instanceof AttributeInterpolation) {
+            if ($item instanceof Attribute_Interpolation) {
                 $dest[] = $item;
                 continue;
             }
-            if ($item instanceof AttributeList) {
+            if ($item instanceof Attribute_List) {
                 $pairs = [];
                 foreach ($item->attributes as $name => $value) {
                     $pairs[] = [$name, $value];
                 }
-                self::mergeAttributes($dest, $pairs, $format);
+                self::merge_attributes($dest, $pairs, $format);
                 continue;
             }
-
             list($name, $value) = $item;
-
             if ('data' === $name) {
-                self::renderDataAttributes($dest, $value);
+                self::render_data_attributes($dest, $value);
             } elseif ('id' === $name) {
-                $value = self::renderJoinedValue($value, '_');
+                $value = self::render_joined_value($value, '_');
                 if (null !== $value) {
                     if (isset($dest['id'])) {
                         $dest['id'] .= '_' . $value;
@@ -87,7 +74,7 @@ class Runtime
                     }
                 }
             } elseif ('class' === $name) {
-                $value = self::renderJoinedValue($value, ' ');
+                $value = self::render_joined_value($value, ' ');
                 if (null !== $value) {
                     if (isset($dest['class'])) {
                         $dest['class'] .= ' ' . $value;
@@ -113,28 +100,23 @@ class Runtime
             }
         }
     }
-
-    private static function renderDataAttributes(array &$dest, $value, string $prefix = 'data')
+    private static function render_data_attributes(array &$dest, $value, string $prefix = 'data')
     {
         if (\is_array($value) || $value instanceof \Traversable) {
             foreach ($value as $subname => $subvalue) {
-                self::renderDataAttributes($dest, $subvalue, $prefix.'-'.$subname);
+                self::render_data_attributes($dest, $subvalue, $prefix . '-' . $subname);
             }
-        } else {
-            if (!isset($dest[$prefix])) {
-                $dest[$prefix] = $value;
-            }
+        } else if (!isset($dest[$prefix])) {
+            $dest[$prefix] = $value;
         }
     }
-
-    private static function renderJoinedValue($values, string $separator)
+    private static function render_joined_value($values, string $separator)
     {
         $result = null;
-
         if (\is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $value) {
                 if (\is_array($value) || $value instanceof \Traversable) {
-                    $value = self::renderJoinedValue($value, $separator);
+                    $value = self::render_joined_value($value, $separator);
                 }
                 if (null !== $value && false !== $value) {
                     if (null !== $result) {
@@ -143,76 +125,56 @@ class Runtime
                     $result .= $value;
                 }
             }
-        } else {
-            if (null !== $values && false !== $values) {
-                $result = $values;
-            }
+        } else if (null !== $values && false !== $values) {
+            $result = $values;
         }
-
         return $result;
     }
-
-    public static function renderObjectRefClass($object, $prefix = null)
+    public static function render_object_ref_class($object, $prefix = null)
     {
         if (!$object) {
             return;
         }
-
-        $class = self::getObjectRefClassString($object);
-
+        $class = self::get_object_ref_class_string($object);
         if (false !== $prefix && null !== $prefix) {
             return $prefix . '_' . $class;
         }
-
         return $class;
     }
-
-    public static function renderObjectRefId($object, $prefix = null)
+    public static function render_object_ref_id($object, $prefix = null)
     {
         if (!$object) {
             return;
         }
-
         $id = null;
-
         if (\is_callable([$object, 'getId'])) {
-            $id = $object->getId();
+            $id = $object->get_id();
         } elseif (\is_callable([$object, 'id'])) {
             $id = $object->id();
         }
-
         if (false === $id || null === $id) {
             $id = 'new';
         }
-
-        $id = self::getObjectRefClassString($object) . '_' . $id;
-
+        $id = self::get_object_ref_class_string($object) . '_' . $id;
         if (false !== $prefix && null !== $prefix) {
             return $prefix . '_' . $id;
         }
-
         return $id;
     }
-
-    public static function getObjectRefClassString($object)
+    public static function get_object_ref_class_string($object)
     {
-        $class = self::getObjectRefName($object);
+        $class = self::get_object_ref_name($object);
         if (false !== $pos = \strrpos($class, '\\')) {
             $class = \substr($class, $pos + 1);
         }
-
         return \strtolower(\preg_replace('#(?<=[a-z])[A-Z]+#', '_$0', $class));
     }
-
-    public static function getObjectRefName($object)
+    public static function get_object_ref_name($object)
     {
-        return \is_callable([$object, 'hamlObjectRef'])
-            ? $object->hamlObjectRef()
-            : \get_class($object);
+        return \is_callable([$object, 'hamlObjectRef']) ? $object->haml_object_ref() : \get_class($object);
     }
-
     public static function filter(Environment $mthaml, $filter, array $context, $content)
     {
-        return $mthaml->getFilter($filter)->filter($content, $context, $mthaml->getOptions());
+        return $mthaml->get_filter($filter)->filter($content, $context, $mthaml->get_options());
     }
 }

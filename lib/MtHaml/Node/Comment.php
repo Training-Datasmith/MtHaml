@@ -1,19 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
 /**
  * Comment Node
  */
-class Comment extends NestAbstract
+class Comment extends Nest_Abstract
 {
     protected $rendered;
     protected $condition;
-
     /**
      * @param bool   $rendered  Whether the comment is rendered in the
      *                          HTML output (as a HTML comment).
@@ -27,46 +24,38 @@ class Comment extends NestAbstract
         $this->rendered = $rendered;
         $this->condition = $condition;
     }
-
-    public function isRendered()
+    public function is_rendered()
     {
         return $this->rendered;
     }
-
-    public function hasCondition()
+    public function has_condition()
     {
         return null !== $this->condition;
     }
-
-    public function getCondition()
+    public function get_condition()
     {
         return $this->condition;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'comment';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterComment($this)) {
-
-            if (false !== $visitor->enterCommentContent($this)) {
-                $this->visitContent($visitor);
+        if (false !== $visitor->enter_comment($this)) {
+            if (false !== $visitor->enter_comment_content($this)) {
+                $this->visit_content($visitor);
             }
-            $visitor->leaveCommentContent($this);
-
-            if (false !== $visitor->enterCommentChilds($this)) {
-                $this->visitChilds($visitor);
+            $visitor->leave_comment_content($this);
+            if (false !== $visitor->enter_comment_childs($this)) {
+                $this->visit_childs($visitor);
             }
-            $visitor->leaveCommentChilds($this);
+            $visitor->leave_comment_childs($this);
         }
-        $visitor->leaveComment($this);
+        $visitor->leave_comment($this);
     }
-
-    public function allowsNestingAndContent()
+    public function allows_nesting_and_content()
     {
-        return ! $this->rendered;
+        return !$this->rendered;
     }
 }

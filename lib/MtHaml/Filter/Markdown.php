@@ -1,9 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-abstract class Markdown extends OptimizableFilter
+abstract class Markdown extends Optimizable_Filter
 {
 }

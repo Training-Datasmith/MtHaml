@@ -1,41 +1,35 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Indentation;
 
-namespace MtHaml\Indentation;
-
-class Undefined implements IndentationInterface
+class Undefined implements Indentation_Interface
 {
-    public function newLevel($indent)
+    public function new_level($indent)
     {
         if (0 === strlen($indent)) {
             return $this;
         }
-        return Indentation::oneLevel($indent);
+        return Indentation::one_level($indent);
     }
-
-    public function getChar()
+    public function get_char()
     {
         return null;
     }
-
-    public function getWidth()
+    public function get_width()
     {
         return null;
     }
-
-    public function getLevel()
+    public function get_level()
     {
         return 0;
     }
-
-    public function getString($levelOffset = 0, $fallback = null)
+    public function get_string($level_offset = 0, $fallback = null)
     {
         $char = substr($fallback, 0, 1);
         if (' ' === $char || "\t" === $char) {
             return $char;
         }
-
         return '';
     }
 }

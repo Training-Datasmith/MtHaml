@@ -1,73 +1,43 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml;
 
-namespace MtHaml;
-
-use MtHaml\Filter\FilterInterface;
-use MtHaml\NodeVisitor\Autoclose;
-use MtHaml\NodeVisitor\Escaping as EscapingVisitor;
-use MtHaml\NodeVisitor\MergeAttrs;
-use MtHaml\NodeVisitor\Midblock;
-use MtHaml\Target\Php;
-use MtHaml\Target\Twig;
-
+use Mt_Haml\Filter\Filter_Interface;
+use Mt_Haml\Node_Visitor\Autoclose;
+use Mt_Haml\Node_Visitor\Escaping as EscapingVisitor;
+use Mt_Haml\Node_Visitor\Merge_Attrs;
+use Mt_Haml\Node_Visitor\Midblock;
+use Mt_Haml\Target\Php;
+use Mt_Haml\Target\Twig;
 class Environment
 {
-    protected $options = [
-        'format' => 'html5',
-        'enable_escaper' => true,
-        'escape_html' => true,
-        'escape_attrs' => true,
-        'cdata' => true,
-        'autoclose' => ['meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'param', 'col', 'base'],
-        'charset' => 'UTF-8',
-        'enable_dynamic_attrs' => true,
-    ];
-
-    protected $filters = [
-        'css' => 'MtHaml\\Filter\\Css',
-        'cdata' => 'MtHaml\\Filter\\Cdata',
-        'escaped' => 'MtHaml\\Filter\\Escaped',
-        'javascript' => 'MtHaml\\Filter\\Javascript',
-        'php' => 'MtHaml\\Filter\\Php',
-        'plain' => 'MtHaml\\Filter\\Plain',
-        'preserve' => 'MtHaml\\Filter\\Preserve',
-        'twig' => 'MtHaml\\Filter\\Twig',
-    ];
-
+    protected $options = ['format' => 'html5', 'enable_escaper' => true, 'escape_html' => true, 'escape_attrs' => true, 'cdata' => true, 'autoclose' => ['meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'param', 'col', 'base'], 'charset' => 'UTF-8', 'enable_dynamic_attrs' => true];
+    protected $filters = ['css' => 'MtHaml\Filter\Css', 'cdata' => 'MtHaml\Filter\Cdata', 'escaped' => 'MtHaml\Filter\Escaped', 'javascript' => 'MtHaml\Filter\Javascript', 'php' => 'MtHaml\Filter\Php', 'plain' => 'MtHaml\Filter\Plain', 'preserve' => 'MtHaml\Filter\Preserve', 'twig' => 'MtHaml\Filter\Twig'];
     protected $target;
-
     public function __construct($target, array $options = [], $filters = [])
     {
         $this->target = $target;
         $this->options = $options + $this->options;
         $this->filters = $filters + $this->filters;
     }
-
-    public function compileString($string, $filename)
+    public function compile_string($string, $filename)
     {
-        $target = $this->getTarget();
-
+        $target = $this->get_target();
         $node = $target->parse($this, $string, $filename);
-
-        foreach ($this->getVisitors() as $visitor) {
+        foreach ($this->get_visitors() as $visitor) {
             $node->accept($visitor);
         }
-
         return $target->compile($this, $node, $filename);
     }
-
-    public function getOptions()
+    public function get_options()
     {
         return $this->options;
     }
-
-    public function getOption($name)
+    public function get_option($name)
     {
         return $this->options[$name];
     }
-
     /**
      * Returns a filter
      *
@@ -78,38 +48,30 @@ class Environment
      *
      * @return FilterInterface
      */
-    public function getFilter($name)
+    public function get_filter($name)
     {
         if (!isset($this->filters[$name])) {
             throw new \InvalidArgumentException(sprintf('Unknown filter name "%s"', $name));
         }
-
         $filter = $this->filters[$name];
-
         if (is_string($filter)) {
             if (!class_exists($filter)) {
                 throw new \RuntimeException(sprintf('Class "%s" for filter "%s" does not exists', $filter, $name));
             }
-
             $filter = new $filter();
-            $this->addFilter($name, $filter);
+            $this->add_filter($name, $filter);
         }
-
         return $filter;
     }
-
-    public function addFilter($name, $filter)
+    public function add_filter($name, $filter)
     {
-        if (!is_string($filter) && !(is_object($filter) && $filter instanceof FilterInterface)) {
+        if (!is_string($filter) && !(is_object($filter) && $filter instanceof Filter_Interface)) {
             throw new \InvalidArgumentException('Filter should be a class name or an instance of FilterInterface');
         }
-
         $this->filters[$name] = $filter;
-
         return $this;
     }
-
-    public function getTarget()
+    public function get_target()
     {
         $target = $this->target;
         if (is_string($target)) {
@@ -125,54 +87,43 @@ class Environment
             }
             $this->target = $target;
         }
-
         return $target;
     }
-
-    public function getVisitors()
+    public function get_visitors()
     {
         $visitors = [];
-
-        $visitors[] = $this->getAutoclosevisitor();
-        $visitors[] = $this->getMidblockVisitor();
-        $visitors[] = $this->getMergeAttrsVisitor();
-
-        if ($this->getOption('enable_escaper')) {
-            $visitors[] = $this->getEscapingVisitor();
+        $visitors[] = $this->get_autoclosevisitor();
+        $visitors[] = $this->get_midblock_visitor();
+        $visitors[] = $this->get_merge_attrs_visitor();
+        if ($this->get_option('enable_escaper')) {
+            $visitors[] = $this->get_escaping_visitor();
         }
-
         return $visitors;
     }
-
-    public function getEscapingVisitor()
+    public function get_escaping_visitor()
     {
-        $html = EscapingVisitor::ESCAPE_TRUE;
-        if (!$this->getOption('escape_html')) {
-            $html = EscapingVisitor::ESCAPE_FALSE;
+        $html = Escaping_Visitor::ESCAPE_TRUE;
+        if (!$this->get_option('escape_html')) {
+            $html = Escaping_Visitor::ESCAPE_FALSE;
         }
-
-        $attrs = EscapingVisitor::ESCAPE_TRUE;
-        if ('once' === $this->getOption('escape_attrs')) {
-            $attrs = EscapingVisitor::ESCAPE_ONCE;
-        } elseif (!$this->getOption('escape_attrs')) {
-            $attrs = EscapingVisitor::ESCAPE_FALSE;
+        $attrs = Escaping_Visitor::ESCAPE_TRUE;
+        if ('once' === $this->get_option('escape_attrs')) {
+            $attrs = Escaping_Visitor::ESCAPE_ONCE;
+        } elseif (!$this->get_option('escape_attrs')) {
+            $attrs = Escaping_Visitor::ESCAPE_FALSE;
         }
-
-        return new EscapingVisitor($html, $attrs);
+        return new Escaping_Visitor($html, $attrs);
     }
-
-    public function getAutocloseVisitor()
+    public function get_autoclose_visitor()
     {
-        return new Autoclose($this->getOption('autoclose'));
+        return new Autoclose($this->get_option('autoclose'));
     }
-
-    public function getMidblockVisitor()
+    public function get_midblock_visitor()
     {
-        return new Midblock($this->getTarget()->getOption('midblock_regex'));
+        return new Midblock($this->get_target()->get_option('midblock_regex'));
     }
-
-    public function getMergeAttrsVisitor()
+    public function get_merge_attrs_visitor()
     {
-        return new MergeAttrs();
+        return new Merge_Attrs();
     }
 }

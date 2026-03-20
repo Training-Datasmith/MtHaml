@@ -1,27 +1,23 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Tag;
-
-class Autoclose extends NodeVisitorAbstract
+use Mt_Haml\Node\Tag;
+class Autoclose extends Node_Visitor_Abstract
 {
-    protected $autocloseTags;
-
-    public function __construct(array $autocloseTags)
+    protected $autoclose_tags;
+    public function __construct(array $autoclose_tags)
     {
-        $this->autocloseTags = $autocloseTags;
+        $this->autoclose_tags = $autoclose_tags;
     }
-
-    public function enterTag(Tag $tag)
+    public function enter_tag(Tag $tag)
     {
-        if ($tag->hasChilds() || $tag->hasContent()) {
+        if ($tag->has_childs() || $tag->has_content()) {
             return;
         }
-        if (in_array($tag->getTagName(), $this->autocloseTags)) {
-            $tag->setFlag(Tag::FLAG_SELF_CLOSE);
+        if (in_array($tag->get_tag_name(), $this->autoclose_tags)) {
+            $tag->set_flag(Tag::FLAG_SELF_CLOSE);
         }
     }
 }

@@ -1,39 +1,33 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\NodeVisitor\PhpRenderer;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
-class Php extends AbstractFilter
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node_Visitor\Php_Renderer;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
+class Php extends Abstract_Filter
 {
-    public function isOptimizable(Renderer $renderer, Filter $node, $options)
+    public function is_optimizable(Renderer $renderer, Filter $node, $options)
     {
-        if (!$renderer instanceof PhpRenderer) {
+        if (!$renderer instanceof Php_Renderer) {
             return false;
         }
-
-        return parent::isOptimizable($renderer, $node, $options);
+        return parent::is_optimizable($renderer, $node, $options);
     }
-
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
         $renderer->write('<?php')->indent();
-        $this->renderFilter($renderer, $node);
+        $this->render_filter($renderer, $node);
         $renderer->undent()->write('?>');
     }
-
     public function filter($content, array $context, $options)
     {
-        $__content__ = '?><?php '.$content;
+        $__content__ = '?><?php ' . $content;
         unset($options, $content);
         extract($context, EXTR_SKIP);
         ob_start();
         eval($__content__);
-
         return ob_get_clean();
     }
 }

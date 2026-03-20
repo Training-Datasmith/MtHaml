@@ -1,9 +1,8 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml;
 
-namespace MtHaml;
-
-class TreeBuilderException extends Exception
+class Tree_Builder_Exception extends Exception
 {
 }

@@ -1,30 +1,27 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Filter;
-use MtHaml\Node\Insert;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Node\ObjectRefClass;
-use MtHaml\Node\ObjectRefId;
-use MtHaml\Node\Run;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttributeInterpolation;
-use MtHaml\Node\TagAttributeList;
-
-class PhpRenderer extends RendererAbstract
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Insert;
+use Mt_Haml\Node\Interpolated_String;
+use Mt_Haml\Node\Node_Abstract;
+use Mt_Haml\Node\Object_Ref_Class;
+use Mt_Haml\Node\Object_Ref_Id;
+use Mt_Haml\Node\Run;
+use Mt_Haml\Node\Tag;
+use Mt_Haml\Node\Tag_Attribute_Interpolation;
+use Mt_Haml\Node\Tag_Attribute_List;
+class Php_Renderer extends Renderer_Abstract
 {
-    protected function escapeLanguage($string, $context)
+    protected function escape_language($string, $context)
     {
         // If there is a '?' at the begining of the string, it could become
         // a '<?' when concatenated with previous output. So we need to escape
         // '?' when appearing at the begining of the string, unless we know
         // that previous output doesn't end with '<'.
         $re = '~(^\?|<\?)~';
-
         // when context is empty, consider that we don't know what's before
         if (0 < strlen($context)) {
             $len = strlen($context);
@@ -33,55 +30,47 @@ class PhpRenderer extends RendererAbstract
                 $re = '~(<\?)~';
             }
         }
-
         return preg_replace($re, "<?php echo '\\1'; ?>", $string);
     }
-
-    protected function stringLiteral($string)
+    protected function string_literal($string)
     {
         return var_export((string) $string, true);
     }
-
-    public function enterInterpolatedString(InterpolatedString $node)
+    public function enter_interpolated_string(Interpolated_String $node)
     {
-        if (!$this->isEchoMode() && 1 < count($node->getChilds())) {
+        if (!$this->is_echo_mode() && 1 < count($node->get_childs())) {
             $this->raw('(');
         }
     }
-
-    public function betweenInterpolatedStringChilds(InterpolatedString $node)
+    public function between_interpolated_string_childs(Interpolated_String $node)
     {
-        if (!$this->isEchoMode()) {
+        if (!$this->is_echo_mode()) {
             $this->raw(' . ');
         }
     }
-
-    public function leaveInterpolatedString(InterpolatedString $node)
+    public function leave_interpolated_string(Interpolated_String $node)
     {
-        if (!$this->isEchoMode() && 1 < count($node->getChilds())) {
+        if (!$this->is_echo_mode() && 1 < count($node->get_childs())) {
             $this->raw(')');
         }
     }
-
-    public function enterInsert(Insert $node)
+    public function enter_insert(Insert $node)
     {
-        $content = $node->getContent();
-        $content = $this->trimInlineComments($content);
-
-        if ($this->isEchoMode()) {
+        $content = $node->get_content();
+        $content = $this->trim_inline_comments($content);
+        if ($this->is_echo_mode()) {
             $fmt = '<?php echo %s; ?>';
-
-            if ($node->getEscaping()->isEnabled()) {
-                if ($node->getEscaping()->isOnce()) {
+            if ($node->get_escaping()->is_enabled()) {
+                if ($node->get_escaping()->is_once()) {
                     $fmt = "<?php echo htmlspecialchars(%s,ENT_QUOTES,'%s',false); ?>";
                 } else {
                     $fmt = "<?php echo htmlspecialchars(%s,ENT_QUOTES,'%s'); ?>";
                 }
             }
-            $this->addDebugInfos($node);
+            $this->add_debug_infos($node);
             $this->raw(sprintf($fmt, $content, $this->charset));
         } else {
-            $content = $node->getContent();
+            $content = $node->get_content();
             if (!preg_match('~^\$?[a-zA-Z0-9_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$~', $content)) {
                 $this->raw('(' . $content . ')');
             } else {
@@ -89,14 +78,11 @@ class PhpRenderer extends RendererAbstract
             }
         }
     }
-
-    public function enterTopBlock(Run $node)
+    public function enter_top_block(Run $node)
     {
-        $this->addDebugInfos($node);
-
-        $content = $this->trimInlineComments($node->getContent());
-
-        if (!$node->isBlock()) {
+        $this->add_debug_infos($node);
+        $content = $this->trim_inline_comments($node->get_content());
+        if (!$node->is_block()) {
             if (preg_match('~[:;]\s*$~', $content)) {
                 $this->write(sprintf('<?php %s ?>', $content));
             } else {
@@ -106,183 +92,131 @@ class PhpRenderer extends RendererAbstract
             $this->write(sprintf('<?php %s { ?>', $content));
         }
     }
-
-    public function enterMidBlock(Run $node)
+    public function enter_mid_block(Run $node)
     {
-        $this->addDebugInfos($node);
-
-        $content = $this->trimInlineComments($node->getContent());
-
+        $this->add_debug_infos($node);
+        $content = $this->trim_inline_comments($node->get_content());
         $this->write(sprintf('<?php } %s { ?>', $content));
     }
-
-    public function leaveTopBlock(Run $node)
+    public function leave_top_block(Run $node)
     {
-        if ($node->isBlock()) {
+        if ($node->is_block()) {
             $this->write('<?php } ?>');
         }
     }
-
-    public function enterObjectRefClass(ObjectRefClass $node)
+    public function enter_object_ref_class(Object_Ref_Class $node)
     {
-        if ($this->isEchoMode()) {
+        if ($this->is_echo_mode()) {
             $this->raw('<?php echo ');
         }
         $this->raw('MtHaml\Runtime::renderObjectRefClass(');
-
-        $this->pushEchoMode(false);
+        $this->push_echo_mode(false);
     }
-
-    public function leaveObjectRefClass(ObjectRefClass $node)
+    public function leave_object_ref_class(Object_Ref_Class $node)
     {
         $this->raw(')');
-
-        $this->popEchoMode();
-        if ($this->isEchoMode()) {
+        $this->pop_echo_mode();
+        if ($this->is_echo_mode()) {
             $this->raw('; ?>');
         }
     }
-
-    public function enterObjectRefId(ObjectRefId $node)
+    public function enter_object_ref_id(Object_Ref_Id $node)
     {
-        if ($this->isEchoMode()) {
+        if ($this->is_echo_mode()) {
             $this->raw('<?php echo ');
         }
         $this->raw('MtHaml\Runtime::renderObjectRefId(');
-
-        $this->pushEchoMode(false);
+        $this->push_echo_mode(false);
     }
-
-    public function leaveObjectRefId(ObjectRefId $node)
+    public function leave_object_ref_id(Object_Ref_Id $node)
     {
         $this->raw(')');
-
-        $this->popEchoMode();
-        if ($this->isEchoMode()) {
+        $this->pop_echo_mode();
+        if ($this->is_echo_mode()) {
             $this->raw('; ?>');
         }
     }
-
-    public function enterObjectRefPrefix(NodeAbstract $node)
+    public function enter_object_ref_prefix(Node_Abstract $node)
     {
         $this->raw(', ');
     }
-
-    public function enterFilter(Filter $node)
+    public function enter_filter(Filter $node)
     {
-        $filter = $this->env->getFilter($node->getFilter());
-
-        if (!$filter->isOptimizable($this, $node, $this->env->getOptions())) {
-            $this->pushEchoMode(false);
-            $this->write('<?php echo MtHaml\Runtime::filter('.$this->env->getOption('mthaml_variable').', '.var_export($node->getFilter(), true).', get_defined_vars(),');
+        $filter = $this->env->get_filter($node->get_filter());
+        if (!$filter->is_optimizable($this, $node, $this->env->get_options())) {
+            $this->push_echo_mode(false);
+            $this->write('<?php echo MtHaml\Runtime::filter(' . $this->env->get_option('mthaml_variable') . ', ' . var_export($node->get_filter(), true) . ', get_defined_vars(),');
             $this->indent();
-
             $first = true;
-            foreach ($node->getChilds() as $statement) {
+            foreach ($node->get_childs() as $statement) {
                 if ($first) {
                     $first = false;
                 } else {
                     $this->raw(" .\n");
                 }
-
-                $this->writeIndentation();
-                $statement->getContent()->accept($this);
+                $this->write_indentation();
+                $statement->get_content()->accept($this);
                 $this->raw('. "\n"');
             }
             $this->raw("\n");
-
             return false;
         }
     }
-
-    public function leaveFilter(Filter $node)
+    public function leave_filter(Filter $node)
     {
-        $filter = $this->env->getFilter($node->getFilter());
-
-        if (!$filter->isOptimizable($this, $node, $this->env->getOptions())) {
+        $filter = $this->env->get_filter($node->get_filter());
+        if (!$filter->is_optimizable($this, $node, $this->env->get_options())) {
             $this->undent();
             $this->write(') ?>');
-            $this->popEchoMode();
+            $this->pop_echo_mode();
         }
     }
-
-    protected function writeDebugInfos($lineno)
+    protected function write_debug_infos($lineno)
     {
     }
-
-    protected function renderDynamicAttributes(Tag $tag)
+    protected function render_dynamic_attributes(Tag $tag)
     {
         $n = 0;
-
         $this->raw(' <?php echo MtHaml\Runtime::renderAttributes(array(');
-
-        $this->setEchoMode(false);
-
-        foreach ($tag->getAttributes() as $attr) {
-
+        $this->set_echo_mode(false);
+        foreach ($tag->get_attributes() as $attr) {
             if (0 !== $n) {
                 $this->raw(', ');
             }
-
-            if ($attr instanceof TagAttributeInterpolation) {
+            if ($attr instanceof Tag_Attribute_Interpolation) {
                 $this->raw('MtHaml\Runtime\AttributeInterpolation::create(');
-                $attr->getValue()->accept($this);
+                $attr->get_value()->accept($this);
                 $this->raw(')');
-            } elseif ($attr instanceof TagAttributeList) {
+            } elseif ($attr instanceof Tag_Attribute_List) {
                 $this->raw('MtHaml\Runtime\AttributeList::create(');
-                $attr->getValue()->accept($this);
+                $attr->get_value()->accept($this);
                 $this->raw(')');
             } else {
                 $this->raw('array(');
-                $attr->getName()->accept($this);
+                $attr->get_name()->accept($this);
                 $this->raw(', ');
-                if ($attr->getValue()) {
-                    $attr->getValue()->accept($this);
+                if ($attr->get_value()) {
+                    $attr->get_value()->accept($this);
                 } else {
                     $this->raw('TRUE');
                 }
                 $this->raw(')');
             }
-
             ++$n;
         }
-
         $this->raw(')');
-
-        $this->setEchoMode(true);
-
+        $this->set_echo_mode(true);
         $this->raw(', ');
-        $this->raw($this->stringLiteral($this->env->getOption('format')));
+        $this->raw($this->string_literal($this->env->get_option('format')));
         $this->raw(', ');
-        $this->raw($this->stringLiteral($this->charset));
-
+        $this->raw($this->string_literal($this->charset));
         $this->raw('); ?>');
     }
-
-    public function trimInlineComments($code)
+    public function trim_inline_comments($code)
     {
         // Removes inlines comments ('//' and '#'), while ignoring '//' and '#'
         // embedded in quoted strings.
-
-        $re = "!
-            (?P<code>
-                (?P<expr>(?:
-                    # anything except \", ', `
-                    [^\"'`]
-
-                    # double quoted string
-                    | \"(?: [^\"\\\\]+ | \\\\. )*\"
-
-                    # single quoted string
-                    | '(?: [^'\\\\]+ | \\\\. )*'
-
-                    # backticks string
-                    | `(?: [^`\\\\]+ | \\\\. )*`
-                )+?)
-            )
-            (?P<comment>\s*(?://|\#).*)?
-        $!xA";
-
+        $re = "!\n            (?P<code>\n                (?P<expr>(?:\n                    # anything except \", ', `\n                    [^\"'`]\n\n                    # double quoted string\n                    | \"(?: [^\"\\\\]+ | \\\\. )*\"\n\n                    # single quoted string\n                    | '(?: [^'\\\\]+ | \\\\. )*'\n\n                    # backticks string\n                    | `(?: [^`\\\\]+ | \\\\. )*`\n                )+?)\n            )\n            (?P<comment>\\s*(?://|\\#).*)?\n        \$!xA";
         return preg_replace($re, '$1', $code);
     }
 }

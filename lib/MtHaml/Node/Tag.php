@@ -1,92 +1,76 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-class Tag extends NestAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+class Tag extends Nest_Abstract
 {
     public const FLAG_REMOVE_INNER_WHITESPACES = 1;
     public const FLAG_REMOVE_OUTER_WHITESPACES = 2;
     public const FLAG_SELF_CLOSE = 4;
-
-    protected $tagName;
+    protected $tag_name;
     protected $attributes;
     protected $flags;
-
-    public function __construct(array $position, $tagName, array $attributes, $flags = 0)
+    public function __construct(array $position, $tag_name, array $attributes, $flags = 0)
     {
         parent::__construct($position);
-        $this->tagName = $tagName;
+        $this->tag_name = $tag_name;
         $this->attributes = $attributes;
         $this->flags = $flags;
     }
-
-    public function getTagName()
+    public function get_tag_name()
     {
-        return $this->tagName;
+        return $this->tag_name;
     }
-
-    public function addAttribute(TagAttribute $attribute)
+    public function add_attribute(Tag_Attribute $attribute)
     {
         $this->attributes[] = $attribute;
     }
-
-    public function hasAttributes()
+    public function has_attributes()
     {
         return 0 < count($this->attributes);
     }
-
-    public function getAttributes()
+    public function get_attributes()
     {
         return $this->attributes;
     }
-
-    public function removeAttribute(TagAttribute $attribute)
+    public function remove_attribute(Tag_Attribute $attribute)
     {
         if (null !== $key = array_search($attribute, $this->attributes, true)) {
             unset($this->attributes[$key]);
         }
     }
-
-    public function setFlag($flag)
+    public function set_flag($flag)
     {
         $this->flags |= $flag;
     }
-
-    public function getFlags()
+    public function get_flags()
     {
         return $this->flags;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'tag';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterTag($this)) {
-
-            if (false !== $visitor->enterTagAttributes($this)) {
-                foreach ($this->getAttributes() as $attribute) {
+        if (false !== $visitor->enter_tag($this)) {
+            if (false !== $visitor->enter_tag_attributes($this)) {
+                foreach ($this->get_attributes() as $attribute) {
                     $attribute->accept($visitor);
                 }
             }
-            $visitor->leaveTagAttributes($this);
-
-            if (false !== $visitor->enterTagContent($this)) {
-                $this->visitContent($visitor);
+            $visitor->leave_tag_attributes($this);
+            if (false !== $visitor->enter_tag_content($this)) {
+                $this->visit_content($visitor);
             }
-            $visitor->leaveTagContent($this);
-
-            if (false !== $visitor->enterTagChilds($this)) {
-                $this->visitChilds($visitor);
+            $visitor->leave_tag_content($this);
+            if (false !== $visitor->enter_tag_childs($this)) {
+                $this->visit_childs($visitor);
             }
-            $visitor->leaveTagChilds($this);
+            $visitor->leave_tag_childs($this);
         }
-        $visitor->leaveTag($this);
+        $visitor->leave_tag($this);
     }
 }

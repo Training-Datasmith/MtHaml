@@ -1,21 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
 class Preserve extends Plain
 {
     public function optimize(Renderer $renderer, Filter $filter, $options)
     {
-        $renderer->pushSavedIndent($renderer->getIndent());
-        $renderer->setIndent(0);
-
-        $this->renderFilter($renderer, $filter);
-
-        $renderer->setIndent($renderer->popSavedIndent());
+        $renderer->push_saved_indent($renderer->get_indent());
+        $renderer->set_indent(0);
+        $this->render_filter($renderer, $filter);
+        $renderer->set_indent($renderer->pop_saved_indent());
     }
 }

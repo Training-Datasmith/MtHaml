@@ -1,87 +1,72 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Comment;
-use MtHaml\Node\Doctype;
-use MtHaml\Node\Filter;
-use MtHaml\Node\Insert;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\ObjectRefClass;
-use MtHaml\Node\ObjectRefId;
-use MtHaml\Node\Root;
-use MtHaml\Node\Run;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttribute;
-use MtHaml\Node\Text;
-
-class Printer extends NodeVisitorAbstract
+use Mt_Haml\Node\Comment;
+use Mt_Haml\Node\Doctype;
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Insert;
+use Mt_Haml\Node\Interpolated_String;
+use Mt_Haml\Node\Object_Ref_Class;
+use Mt_Haml\Node\Object_Ref_Id;
+use Mt_Haml\Node\Root;
+use Mt_Haml\Node\Run;
+use Mt_Haml\Node\Statement;
+use Mt_Haml\Node\Tag;
+use Mt_Haml\Node\Tag_Attribute;
+use Mt_Haml\Node\Text;
+class Printer extends Node_Visitor_Abstract
 {
     protected $indent = 0;
     protected $output = '';
-
-    public function getOutput()
+    public function get_output()
     {
         return $this->output;
     }
-
     protected function indent()
     {
         $this->indent += 1;
-
         return $this;
     }
-
     protected function undent()
     {
         $this->indent -= 1;
-
         return $this;
     }
-
     protected function write($string, $indent = true, $break = true)
     {
         if ($indent) {
-            $this->writeIndentation();
+            $this->write_indentation();
         }
         $this->raw($string);
         if ($break) {
             $this->output .= "\n";
         }
-
         return $this;
     }
-
     protected function raw(string $string)
     {
         $this->output .= $string;
-
         return $this;
     }
-
-    protected function writeIndentation()
+    protected function write_indentation()
     {
         $this->output .= str_repeat(' ', $this->indent * 2);
-
         return $this;
     }
-
-    public function enterRoot(Root $node)
+    public function enter_root(Root $node)
     {
         $this->write('root(')->indent();
     }
-    public function leaveRoot(Root $node)
+    public function leave_root(Root $node)
     {
         $this->undent()->write(')');
     }
-
-    public function enterTag(Tag $node)
+    public function enter_tag(Tag $node)
     {
-        $name = $node->getTagName();
-        $flags = $node->getFlags();
+        $name = $node->get_tag_name();
+        $flags = $node->get_flags();
         if ($flags & Tag::FLAG_REMOVE_INNER_WHITESPACES) {
             $name .= '<';
         }
@@ -91,177 +76,143 @@ class Printer extends NodeVisitorAbstract
         if ($flags & Tag::FLAG_SELF_CLOSE) {
             $name .= '/';
         }
-
-        $this->write('tag(' . $name, true, false)
-            ->indent();
-
-        if ($node->hasContent()) {
+        $this->write('tag(' . $name, true, false)->indent();
+        if ($node->has_content()) {
             $this->raw(' ');
-            $node->getContent()->accept($this);
+            $node->get_content()->accept($this);
         }
-
-        if ($node->hasAttributes() || $node->hasChilds()) {
+        if ($node->has_attributes() || $node->has_childs()) {
             $this->raw("\n");
         }
     }
-
-    public function enterTagContent(Tag $node)
+    public function enter_tag_content(Tag $node)
     {
         return false;
     }
-
-    public function leaveTag(Tag $node)
+    public function leave_tag(Tag $node)
     {
-        $this->undent()->write(')', $node->hasAttributes() || $node->hasChilds());
+        $this->undent()->write(')', $node->has_attributes() || $node->has_childs());
     }
-
-    public function enterTagAttribute(TagAttribute $node)
+    public function enter_tag_attribute(Tag_Attribute $node)
     {
         $this->write('attr(', true, false);
     }
-
-    public function leaveTagAttribute(TagAttribute $node)
+    public function leave_tag_attribute(Tag_Attribute $node)
     {
         $this->write(')', false, true);
     }
-
-    public function enterStatement(Statement $node)
+    public function enter_statement(Statement $node)
     {
         $this->write('', true, false);
     }
-
-    public function leaveStatement(Statement $node)
+    public function leave_statement(Statement $node)
     {
         $this->write('', false, true);
     }
-
-    public function enterText(Text $node)
+    public function enter_text(Text $node)
     {
-        $content = $node->getContent();
-
-        $escaping = $node->getEscaping();
-        if (true === $escaping->isEnabled()) {
+        $content = $node->get_content();
+        $escaping = $node->get_escaping();
+        if (true === $escaping->is_enabled()) {
             $flag = '&';
-            if ($node->getEscaping()->isOnce()) {
+            if ($node->get_escaping()->is_once()) {
                 $flag .= '!';
             }
             $content = $flag . $content;
-        } elseif (false === $escaping->isEnabled()) {
+        } elseif (false === $escaping->is_enabled()) {
             $content = '!' . $content;
         }
-
-        $this->raw('text('.$content.')');
+        $this->raw('text(' . $content . ')');
     }
-
-    public function enterInsert(Insert $node)
+    public function enter_insert(Insert $node)
     {
-        $content = $node->getContent();
-
-        $escaping = $node->getEscaping();
-        if (true === $escaping->isEnabled()) {
+        $content = $node->get_content();
+        $escaping = $node->get_escaping();
+        if (true === $escaping->is_enabled()) {
             $flag = '&';
-            if ($node->getEscaping()->isOnce()) {
+            if ($node->get_escaping()->is_once()) {
                 $flag .= '!';
             }
             $content = $flag . $content;
-        } elseif (false === $escaping->isEnabled()) {
+        } elseif (false === $escaping->is_enabled()) {
             $content = '!' . $content;
         }
-
-        $this->raw('insert('.$content.')');
+        $this->raw('insert(' . $content . ')');
     }
-
-    public function enterRun(Run $node)
+    public function enter_run(Run $node)
     {
-        $this->write('run(' . $node->getContent(), true, $node->hasChilds())
-            ->indent();
+        $this->write('run(' . $node->get_content(), true, $node->has_childs())->indent();
     }
-
-    public function enterRunMidblock(Run $node)
+    public function enter_run_midblock(Run $node)
     {
-        if ($node->hasMidblock()) {
+        if ($node->has_midblock()) {
             $this->write('midblock(')->indent();
         }
     }
-
-    public function leaveRunMidblock(Run $node)
+    public function leave_run_midblock(Run $node)
     {
-        if ($node->hasMidblock()) {
+        if ($node->has_midblock()) {
             $this->undent()->write(')');
         }
     }
-
-    public function leaveRun(Run $node)
+    public function leave_run(Run $node)
     {
-        $this->undent()->write(')', $node->hasChilds());
+        $this->undent()->write(')', $node->has_childs());
     }
-
-    public function enterInterpolatedString(InterpolatedString $node)
+    public function enter_interpolated_string(Interpolated_String $node)
     {
         $this->raw('interpolated(');
     }
-
-    public function leaveInterpolatedString(InterpolatedString $node)
+    public function leave_interpolated_string(Interpolated_String $node)
     {
         $this->raw(')');
     }
-
-    public function enterComment(Comment $node)
+    public function enter_comment(Comment $node)
     {
-        $this->write('comment(' . $node->getCondition(), true, false)->indent();
+        $this->write('comment(' . $node->get_condition(), true, false)->indent();
     }
-
-    public function enterCommentChilds(Comment $node)
+    public function enter_comment_childs(Comment $node)
     {
-        if ($node->hasChilds()) {
+        if ($node->has_childs()) {
             $this->raw("\n");
         }
     }
-
-    public function leaveComment(Comment $node)
+    public function leave_comment(Comment $node)
     {
-        $this->undent()->write(')', $node->hasChilds());
+        $this->undent()->write(')', $node->has_childs());
     }
-
-    public function enterDoctype(Doctype $doctype)
+    public function enter_doctype(Doctype $doctype)
     {
         $str = 'doctype(';
-        $str .= $doctype->getDoctypeId() ?: 'default';
-        if ($options = $doctype->getOptions()) {
+        $str .= $doctype->get_doctype_id() ?: 'default';
+        if ($options = $doctype->get_options()) {
             $str .= ', ' . $options;
         }
         $str .= ')';
         $this->write($str);
     }
-
-    public function enterFilter(Filter $node)
+    public function enter_filter(Filter $node)
     {
-        $this->write('filter(' . $node->getFilter())->indent();
+        $this->write('filter(' . $node->get_filter())->indent();
     }
-
-    public function leaveFilter(Filter $node)
+    public function leave_filter(Filter $node)
     {
         $this->undent()->write(')');
     }
-
-    public function enterObjectRefClass(ObjectRefClass $node)
+    public function enter_object_ref_class(Object_Ref_Class $node)
     {
         $this->raw('object_ref_class(');
     }
-
-    public function leaveObjectRefClass(ObjectRefClass $node)
+    public function leave_object_ref_class(Object_Ref_Class $node)
     {
         $this->raw(')');
     }
-
-    public function enterObjectRefId(ObjectRefId $node)
+    public function enter_object_ref_id(Object_Ref_Id $node)
     {
         $this->raw('object_ref_id(');
     }
-
-    public function leaveObjectRefId(ObjectRefId $node)
+    public function leave_object_ref_id(Object_Ref_Id $node)
     {
         $this->raw(')');
     }
-
 }

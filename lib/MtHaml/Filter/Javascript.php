@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
 class Javascript extends Plain
 {
     public function optimize(Renderer $renderer, Filter $filter, $options)
@@ -15,11 +13,9 @@ class Javascript extends Plain
         if ($options['cdata'] === true) {
             $renderer->write('//<![CDATA[');
         }
-
         $renderer->indent();
-        $this->renderFilter($renderer, $filter);
+        $this->render_filter($renderer, $filter);
         $renderer->undent();
-
         if ($options['cdata'] === true) {
             $renderer->write('//]]>');
         }

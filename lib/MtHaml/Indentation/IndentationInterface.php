@@ -1,39 +1,34 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Indentation;
 
-namespace MtHaml\Indentation;
-
-interface IndentationInterface
+interface Indentation_Interface
 {
     /**
      * Transitions to new indentation level
      *
      * @return IndentationInterface
      */
-    public function newLevel($indent);
-
+    public function new_level($indent);
     /**
      * Returns the indentation char
      *
      * @return string|null
      */
-    public function getChar();
-
+    public function get_char();
     /**
      * Returns the indentation width
      *
      * @return int|null
      */
-    public function getWidth();
-
+    public function get_width();
     /**
      * Returns the indentation level
      *
      * @return int
      */
-    public function getLevel();
-
+    public function get_level();
     /**
      * Returns the indentation string for the current line
      *
@@ -47,5 +42,5 @@ interface IndentationInterface
      *                             $fallback is returned instead
      * @return string A string of zero or more spaces or tabs
      */
-    public function getString($levelOffset = 0, $fallback = null);
+    public function get_string($level_offset = 0, $fallback = null);
 }

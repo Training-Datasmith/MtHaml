@@ -1,118 +1,97 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\Exception;
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-abstract class NestAbstract extends NodeAbstract implements NestInterface
+use Mt_Haml\Exception;
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+abstract class Nest_Abstract extends Node_Abstract implements Nest_Interface
 {
     private $content;
     private $childs = [];
-
-    public function addChild(NodeAbstract $node)
+    public function add_child(Node_Abstract $node)
     {
-        if (!$this->allowsNestingAndContent() && $this->hasContent()) {
+        if (!$this->allows_nesting_and_content() && $this->has_content()) {
             throw new Exception('A node cannot have both content and nested nodes');
         }
-        if (null !== $parent = $node->getParent()) {
-            $parent->removeChild($node);
+        if (null !== $parent = $node->get_parent()) {
+            $parent->remove_child($node);
         }
-
         $prev = end($this->childs) ?: null;
-
         $this->childs[] = $node;
-        $node->setParent($this);
-
+        $node->set_parent($this);
         if ($prev) {
-            $prev->setNextSibling($node);
+            $prev->set_next_sibling($node);
         }
-        $node->setPreviousSibling($prev);
-        $node->setNextSibling();
+        $node->set_previous_sibling($prev);
+        $node->set_next_sibling();
     }
-
-    public function removeChild(NodeAbstract $node)
+    public function remove_child(Node_Abstract $node)
     {
         if (false === $key = array_search($node, $this->childs, true)) {
             return;
         }
-
         unset($this->childs[$key]);
-
-        $prev = $node->getPreviousSibling();
-        $next = $node->getNextSibling();
-
+        $prev = $node->get_previous_sibling();
+        $next = $node->get_next_sibling();
         if ($prev) {
-            $prev->setNextSibling($next);
+            $prev->set_next_sibling($next);
         }
         if ($next) {
-            $next->setPreviousSibling($prev);
+            $next->set_previous_sibling($prev);
         }
-
-        $node->setParent();
-        $node->setPreviousSibling();
-        $node->setNextSibling();
+        $node->set_parent();
+        $node->set_previous_sibling();
+        $node->set_next_sibling();
     }
-
-    public function hasChilds()
+    public function has_childs()
     {
         return 0 < count($this->childs);
     }
-
-    public function getChilds()
+    public function get_childs()
     {
         return $this->childs;
     }
-
-    public function getFirstChild()
+    public function get_first_child()
     {
         if (false !== $child = reset($this->childs)) {
             return $child;
         }
     }
-
-    public function getLastChild()
+    public function get_last_child()
     {
         if (false !== $child = end($this->childs)) {
             return $child;
         }
     }
-
-    public function setContent($content)
+    public function set_content($content)
     {
-        if (!$this->allowsNestingAndContent() && $this->hasChilds()) {
+        if (!$this->allows_nesting_and_content() && $this->has_childs()) {
             throw new Exception('A node cannot have both content and nested nodes');
         }
         $this->content = $content;
     }
-
-    public function hasContent()
+    public function has_content()
     {
         return null !== $this->content;
     }
-
-    public function getContent()
+    public function get_content()
     {
         return $this->content;
     }
-
-    public function allowsNestingAndContent()
+    public function allows_nesting_and_content()
     {
         return false;
     }
-
-    public function visitContent(NodeVisitorInterface $visitor)
+    public function visit_content(Node_Visitor_Interface $visitor)
     {
-        if ($this->hasContent()) {
-            $this->getContent()->accept($visitor);
+        if ($this->has_content()) {
+            $this->get_content()->accept($visitor);
         }
     }
-
-    public function visitChilds(NodeVisitorInterface $visitor)
+    public function visit_childs(Node_Visitor_Interface $visitor)
     {
-        foreach ($this->getChilds() as $child) {
+        foreach ($this->get_childs() as $child) {
             $child->accept($visitor);
         }
     }

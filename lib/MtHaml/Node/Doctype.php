@@ -1,52 +1,26 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
 /**
  * Doctype Node
  */
-class Doctype extends NodeAbstract
+class Doctype extends Node_Abstract
 {
-    protected $doctypeId;
+    protected $doctype_id;
     protected $options;
-
-    protected $doctypes = [
-        'xhtml' => [
-            '' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-            'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-            'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
-            '5' => '<!DOCTYPE html>',
-            '1.1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-            'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-            'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
-            'rdfa' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">',
-        ],
-        'html4' => [
-            '' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
-            'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
-            'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
-        ],
-        'html5' => [
-            '' => '<!DOCTYPE html>',
-            '5' => '<!DOCTYPE html>',
-        ],
-    ];
-
-    public function __construct(array $position, $doctypeId, $options)
+    protected $doctypes = ['xhtml' => ['' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', 'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">', 'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">', '5' => '<!DOCTYPE html>', '1.1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">', 'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">', 'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">', 'rdfa' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">'], 'html4' => ['' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">', 'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">', 'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'], 'html5' => ['' => '<!DOCTYPE html>', '5' => '<!DOCTYPE html>']];
+    public function __construct(array $position, $doctype_id, $options)
     {
         parent::__construct($position);
-        $this->doctypeId = $doctypeId;
+        $this->doctype_id = $doctype_id;
         $this->options = $options;
     }
-
-    public function getDoctype($format)
+    public function get_doctype($format)
     {
-        $lcid = strtolower($this->doctypeId);
-
+        $lcid = strtolower($this->doctype_id);
         if ($lcid === 'xml') {
             if ('xhtml' !== $format) {
                 return '';
@@ -59,36 +33,31 @@ class Doctype extends NodeAbstract
         if (empty($lcid)) {
             return $this->doctypes[$format][''];
         }
-
         if (isset($this->doctypes[$format][$lcid])) {
             return $this->doctypes[$format][$lcid];
         }
         $doctypes = [];
         foreach ($this->doctypes[$format] as $key => $doctype) {
-            $doctypes[] = "'".trim('!!! ' . $key)."'";
+            $doctypes[] = "'" . trim('!!! ' . $key) . "'";
         }
-        trigger_error(sprintf("No such doctype '!!! %s' for the format '%s'. Available doctypes for the current format are: %s", $this->doctypeId, $format, implode(', ', $doctypes)), E_USER_WARNING);
+        trigger_error(sprintf("No such doctype '!!! %s' for the format '%s'. Available doctypes for the current format are: %s", $this->doctype_id, $format, implode(', ', $doctypes)), E_USER_WARNING);
         return $this->doctypes[$format][''];
     }
-
-    public function getDoctypeId()
+    public function get_doctype_id()
     {
-        return $this->doctypeId;
+        return $this->doctype_id;
     }
-
-    public function getOptions()
+    public function get_options()
     {
         return $this->options;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'doctype';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        $visitor->enterDoctype($this);
-        $visitor->leaveDoctype($this);
+        $visitor->enter_doctype($this);
+        $visitor->leave_doctype($this);
     }
 }

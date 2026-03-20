@@ -1,29 +1,23 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
-abstract class Less extends AbstractFilter
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
+abstract class Less extends Abstract_Filter
 {
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
-        $renderer->write($this->filter($this->getContent($node), [], $options));
+        $renderer->write($this->filter($this->get_content($node), [], $options));
     }
-
     public function filter($content, array $context, $options)
     {
-        $css = $this->getCss($content, $context, $options);
-
+        $css = $this->get_css($content, $context, $options);
         if (isset($options['cdata']) && $options['cdata'] === true) {
-            return "<style type=\"text/css\">\n/*<![CDATA[*/\n".$css."\n/*]]>*/\n</style>";
+            return "<style type=\"text/css\">\n/*<![CDATA[*/\n" . $css . "\n/*]]>*/\n</style>";
         }
-
-        return "<style type=\"text/css\">\n".$css."\n</style>";
+        return "<style type=\"text/css\">\n" . $css . "\n</style>";
     }
-
-    abstract protected function getCss($content, array $context, $options);
+    abstract protected function get_css($content, array $context, $options);
 }

@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Exception;
 
-namespace MtHaml\Exception;
-
-use MtHaml\Exception;
-
-class SyntaxErrorException extends Exception
+use Mt_Haml\Exception;
+class Syntax_Error_Exception extends Exception
 {
 }

@@ -1,38 +1,31 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-class Text extends EscapableAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+class Text extends Escapable_Abstract
 {
     private $content;
-
     public function __construct(array $position, $content)
     {
         parent::__construct($position);
         $this->content = $content;
     }
-
-    public function getContent()
+    public function get_content()
     {
         return $this->content;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'text';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        $visitor->enterText($this);
-        $visitor->leaveText($this);
+        $visitor->enter_text($this);
+        $visitor->leave_text($this);
     }
-
-    public function isConst()
+    public function is_const()
     {
         return true;
     }

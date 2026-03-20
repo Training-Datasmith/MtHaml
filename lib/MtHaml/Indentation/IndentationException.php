@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Indentation;
 
-namespace MtHaml\Indentation;
-
-use MtHaml\Exception;
-
-class IndentationException extends Exception
+use Mt_Haml\Exception;
+class Indentation_Exception extends Exception
 {
 }

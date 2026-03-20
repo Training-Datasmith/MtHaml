@@ -1,100 +1,82 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml;
 
-namespace MtHaml;
-
-use MtHaml\Node\NestInterface;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Node\Root;
-use MtHaml\Node\Statement;
-use MtHaml\Node\Tag;
-
-class TreeBuilder
+use Mt_Haml\Node\Nest_Interface;
+use Mt_Haml\Node\Node_Abstract;
+use Mt_Haml\Node\Root;
+use Mt_Haml\Node\Statement;
+use Mt_Haml\Node\Tag;
+class Tree_Builder
 {
     /**
      * @var array<\MtHaml\Node\NodeAbstract>
      */
-    private $parentStack;
-
+    private $parent_stack;
     /**
      * @var \MtHaml\Node\NodeAbstract
      */
     private $parent;
-
     /**
      * @var \MtHaml\Node\NodeAbstract|null
      */
     private $prev;
-
     public function __construct()
     {
-        $this->parentStack = [];
+        $this->parent_stack = [];
         $this->parent = new Root();
     }
-
-    public function addChild($level, NodeAbstract $node)
+    public function add_child($level, Node_Abstract $node)
     {
-        $this->updateStack($level);
-
-        if (!$this->parent instanceof NestInterface) {
+        $this->update_stack($level);
+        if (!$this->parent instanceof Nest_Interface) {
             $parent = $this->parent;
             if ($parent instanceof Statement) {
-                $parent = $parent->getContent();
+                $parent = $parent->get_content();
             }
-            $msg = sprintf('Illegal nesting: nesting within %s is illegal', $parent->getNodeName());
-            throw new TreeBuilderException($msg);
+            $msg = sprintf('Illegal nesting: nesting within %s is illegal', $parent->get_node_name());
+            throw new Tree_Builder_Exception($msg);
         }
-
-        if ($this->parent->hasContent() && !$this->parent->allowsNestingAndContent()) {
+        if ($this->parent->has_content() && !$this->parent->allows_nesting_and_content()) {
             if ($this->parent instanceof Tag) {
-                $msg = sprintf('Illegal nesting: content can\'t be both given on the same line as %%%s and nested within it', $this->parent->getTagName());
+                $msg = sprintf('Illegal nesting: content can\'t be both given on the same line as %%%s and nested within it', $this->parent->get_tag_name());
             } else {
                 $msg = sprintf('Illegal nesting: nesting within a tag that already has content is illegal');
             }
-            throw new TreeBuilderException($msg);
+            throw new Tree_Builder_Exception($msg);
         }
-
-        if ($this->parent instanceof Tag && $this->parent->getFlags() & Tag::FLAG_SELF_CLOSE) {
+        if ($this->parent instanceof Tag && $this->parent->get_flags() & Tag::FLAG_SELF_CLOSE) {
             $msg = 'Illegal nesting: nesting within a self-closing tag is illegal';
-            throw new TreeBuilderException($msg);
+            throw new Tree_Builder_Exception($msg);
         }
-
-        $this->parent->addChild($node);
+        $this->parent->add_child($node);
         $this->prev = $node;
     }
-
-    public function getRoot()
+    public function get_root()
     {
-        if (count($this->parentStack) > 0) {
-            return $this->parentStack[0];
+        if (count($this->parent_stack) > 0) {
+            return $this->parent_stack[0];
         }
         return $this->parent;
     }
-
-    public function hasStatements()
+    public function has_statements()
     {
         if (!$this->parent instanceof Root) {
             return true;
         }
-        return $this->parent->hasChilds();
+        return $this->parent->has_childs();
     }
-
-    private function updateStack($level)
+    private function update_stack($level)
     {
         // open node
-
         if ($level > 0) {
-
-            $this->parentStack[] = $this->parent;
+            $this->parent_stack[] = $this->parent;
             $this->parent = $this->prev;
-
             // close node(s)
-
         } elseif ($level < 0) {
-
             for ($i = $level; $i < 0; ++$i) {
-                $this->parent = array_pop($this->parentStack);
+                $this->parent = array_pop($this->parent_stack);
             }
         }
     }

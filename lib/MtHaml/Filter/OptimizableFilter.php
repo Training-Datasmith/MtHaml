@@ -1,40 +1,34 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\Text;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
-abstract class OptimizableFilter extends AbstractFilter
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Interpolated_String;
+use Mt_Haml\Node\Text;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
+abstract class Optimizable_Filter extends Abstract_Filter
 {
-    private $forceOptimization;
-
-    public function __construct($forceOptimization = false)
+    private $force_optimization;
+    public function __construct($force_optimization = false)
     {
-        $this->forceOptimization = $forceOptimization;
+        $this->force_optimization = $force_optimization;
     }
-
-    public function isOptimizable(Renderer $renderer, Filter $node, $options)
+    public function is_optimizable(Renderer $renderer, Filter $node, $options)
     {
-        if ($this->forceOptimization) {
+        if ($this->force_optimization) {
             return true;
         }
-
-        return parent::isOptimizable($renderer, $node, $options);
+        return parent::is_optimizable($renderer, $node, $options);
     }
-
     public function optimize(Renderer $renderer, Filter $node, $options)
     {
         $inserts = [];
         $content = '';
-        foreach ($node->getChilds() as $child) {
-            foreach ($child->getContent()->getChilds() as $item) {
+        foreach ($node->get_childs() as $child) {
+            foreach ($child->get_content()->get_childs() as $item) {
                 if ($item instanceof Text) {
-                    $content .= $item->getContent();
+                    $content .= $item->get_content();
                 } else {
                     $hash = bin2hex(random_bytes(8));
                     $inserts[$hash] = $item;
@@ -43,18 +37,16 @@ abstract class OptimizableFilter extends AbstractFilter
             }
             $content .= "\n";
         }
-
-        $string = new InterpolatedString([]);
+        $string = new Interpolated_String([]);
         $result = $this->filter($content, [], []);
         foreach ($inserts as $hash => $insert) {
             $parts = explode($hash, $result, 2);
-            $string->addChild(new Text([], $parts[0]));
-            $string->addChild($insert);
+            $string->add_child(new Text([], $parts[0]));
+            $string->add_child($insert);
             $result = $parts[1];
         }
-        $string->addChild(new Text([], $result));
+        $string->add_child(new Text([], $result));
         $string->accept($renderer);
     }
-
     abstract public function filter($content, array $context, $options);
 }

@@ -1,38 +1,33 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Run;
-
-class Midblock extends NodeVisitorAbstract
+use Mt_Haml\Node\Run;
+class Midblock extends Node_Visitor_Abstract
 {
-    protected $midblockRegex;
-
-    public function __construct($midblockRegex)
+    protected $midblock_regex;
+    public function __construct($midblock_regex)
     {
-        $this->midblockRegex = $midblockRegex;
+        $this->midblock_regex = $midblock_regex;
     }
-
-    public function enterRun(Run $node)
+    public function enter_run(Run $node)
     {
         do {
-            if (null === $prev = $node->getPreviousSibling()) {
+            if (null === $prev = $node->get_previous_sibling()) {
                 break;
             }
             if (!$prev instanceof Run) {
                 break;
             }
-            if (!preg_match($this->midblockRegex, $node->getContent())) {
+            if (!preg_match($this->midblock_regex, $node->get_content())) {
                 break;
             }
-
-            $node->getParent()->removeChild($node);
-            while (null !== $prev->getMidblock()) {
-                $prev = $prev->getMidblock();
+            $node->get_parent()->remove_child($node);
+            while (null !== $prev->get_midblock()) {
+                $prev = $prev->get_midblock();
             }
-            $prev->setMidblock($node);
+            $prev->set_midblock($node);
         } while (false);
     }
 }

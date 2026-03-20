@@ -1,44 +1,37 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-class ObjectRefClass extends NodeAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+class Object_Ref_Class extends Node_Abstract
 {
     protected $object;
     protected $prefix;
-
-    public function __construct(array $position, NodeAbstract $object, NodeAbstract $prefix = null)
+    public function __construct(array $position, Node_Abstract $object, Node_Abstract $prefix = null)
     {
         parent::__construct($position);
         $this->object = $object;
         $this->prefix = $prefix;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'object_ref_class';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterObjectRefClass($this)) {
-
-            if (false !== $visitor->enterObjectRefObject($this)) {
+        if (false !== $visitor->enter_object_ref_class($this)) {
+            if (false !== $visitor->enter_object_ref_object($this)) {
                 $this->object->accept($visitor);
             }
-            $visitor->leaveObjectRefObject($this);
-
+            $visitor->leave_object_ref_object($this);
             if ($this->prefix) {
-                if (false !== $visitor->enterObjectRefPrefix($this)) {
+                if (false !== $visitor->enter_object_ref_prefix($this)) {
                     $this->prefix->accept($visitor);
                 }
-                $visitor->leaveObjectRefPrefix($this);
+                $visitor->leave_object_ref_prefix($this);
             }
         }
-        $visitor->leaveObjectRefClass($this);
+        $visitor->leave_object_ref_class($this);
     }
 }

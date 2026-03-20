@@ -1,37 +1,31 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-class Root extends NestAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+class Root extends Nest_Abstract
 {
     public function __construct(array $position = null)
     {
         parent::__construct($position ?: ['lineno' => 0, 'column' => 0]);
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'root';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterRoot($this)) {
-
-            if (false !== $visitor->enterRootContent($this)) {
-                $this->visitContent($visitor);
+        if (false !== $visitor->enter_root($this)) {
+            if (false !== $visitor->enter_root_content($this)) {
+                $this->visit_content($visitor);
             }
-            $visitor->leaveRootContent($this);
-
-            if (false !== $visitor->enterRootChilds($this)) {
-                $this->visitChilds($visitor);
+            $visitor->leave_root_content($this);
+            if (false !== $visitor->enter_root_childs($this)) {
+                $this->visit_childs($visitor);
             }
-            $visitor->leaveRootChilds($this);
+            $visitor->leave_root_childs($this);
         }
-        $visitor->leaveRoot($this);
+        $visitor->leave_root($this);
     }
 }

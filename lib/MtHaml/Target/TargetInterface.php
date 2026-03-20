@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Target;
 
-namespace MtHaml\Target;
-
-use MtHaml\Environment;
-use MtHaml\Node\NodeAbstract;
-
-interface TargetInterface
+use Mt_Haml\Environment;
+use Mt_Haml\Node\Node_Abstract;
+interface Target_Interface
 {
     public function parse(Environment $env, $string, $filename);
-    public function compile(Environment $env, NodeAbstract $node);
+    public function compile(Environment $env, Node_Abstract $node);
 }

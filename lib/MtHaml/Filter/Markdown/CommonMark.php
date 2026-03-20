@@ -1,24 +1,20 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter\Markdown;
 
-namespace MtHaml\Filter\Markdown;
-
-use League\CommonMark\Converter;
-use MtHaml\Filter\Markdown;
-
-class CommonMark extends Markdown
+use League\Common_Mark\Converter;
+use Mt_Haml\Filter\Markdown;
+class Common_Mark extends Markdown
 {
     private $converter;
-
-    public function __construct(Converter $converter, $forceOptimization = false)
+    public function __construct(Converter $converter, $force_optimization = false)
     {
-        parent::__construct($forceOptimization);
+        parent::__construct($force_optimization);
         $this->converter = $converter;
     }
-
     public function filter($content, array $context, $options)
     {
-        return $this->converter->convertToHtml($content);
+        return $this->converter->convert_to_html($content);
     }
 }

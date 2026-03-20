@@ -1,30 +1,27 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node_Visitor;
 
-namespace MtHaml\NodeVisitor;
-
-use MtHaml\Node\Filter;
-use MtHaml\Node\Insert;
-use MtHaml\Node\InterpolatedString;
-use MtHaml\Node\NodeAbstract;
-use MtHaml\Node\ObjectRefClass;
-use MtHaml\Node\ObjectRefId;
-use MtHaml\Node\Run;
-use MtHaml\Node\Tag;
-use MtHaml\Node\TagAttributeInterpolation;
-use MtHaml\Node\TagAttributeList;
-
-class TwigRenderer extends RendererAbstract
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Insert;
+use Mt_Haml\Node\Interpolated_String;
+use Mt_Haml\Node\Node_Abstract;
+use Mt_Haml\Node\Object_Ref_Class;
+use Mt_Haml\Node\Object_Ref_Id;
+use Mt_Haml\Node\Run;
+use Mt_Haml\Node\Tag;
+use Mt_Haml\Node\Tag_Attribute_Interpolation;
+use Mt_Haml\Node\Tag_Attribute_List;
+class Twig_Renderer extends Renderer_Abstract
 {
-    protected function escapeLanguage($string, $context)
+    protected function escape_language($string, $context)
     {
         // If there is a '%' or '{' at the begining of the string, it could
         // become '{%' or '{{' when concatenated with previous output. So we
         // need to escape '{' and '%' when appearing at the begining of the
         // string, unless we know that previous output doesn't end with '{'.
         $re = '~(^[{%][{%]?|\{[{%])~';
-
         // when context is empty, consider that we don't know what's before
         if (0 < strlen($context)) {
             $len = strlen($context);
@@ -33,40 +30,34 @@ class TwigRenderer extends RendererAbstract
                 $re = '~(\{[{%])~';
             }
         }
-
         return preg_replace($re, "{{ '\\1' }}", $string);
     }
-
-    protected function stringLiteral($string)
+    protected function string_literal($string)
     {
         return var_export((string) $string, true);
     }
-
-    public function enterInterpolatedString(InterpolatedString $node)
+    public function enter_interpolated_string(Interpolated_String $node)
     {
-        if (!$this->isEchoMode() && 1 < count($node->getChilds())) {
+        if (!$this->is_echo_mode() && 1 < count($node->get_childs())) {
             $this->raw('(');
         }
     }
-
-    public function betweenInterpolatedStringChilds(InterpolatedString $node)
+    public function between_interpolated_string_childs(Interpolated_String $node)
     {
-        if (!$this->isEchoMode()) {
+        if (!$this->is_echo_mode()) {
             $this->raw(' ~ ');
         }
     }
-
-    public function leaveInterpolatedString(InterpolatedString $node)
+    public function leave_interpolated_string(Interpolated_String $node)
     {
-        if (!$this->isEchoMode() && 1 < count($node->getChilds())) {
+        if (!$this->is_echo_mode() && 1 < count($node->get_childs())) {
             $this->raw(')');
         }
     }
-
-    public function enterInsert(Insert $node)
+    public function enter_insert(Insert $node)
     {
-        if ($this->isEchoMode()) {
-            $escaping = $node->getEscaping()->isEnabled();
+        if ($this->is_echo_mode()) {
+            $escaping = $node->get_escaping()->is_enabled();
             if (true === $escaping) {
                 $fmt = '{{ (%s)|escape }}';
             } elseif (false === $escaping) {
@@ -74,179 +65,147 @@ class TwigRenderer extends RendererAbstract
             } else {
                 $fmt = '{{ %s }}';
             }
-            $this->addDebugInfos($node);
-            $this->raw(sprintf($fmt, $node->getContent()));
+            $this->add_debug_infos($node);
+            $this->raw(sprintf($fmt, $node->get_content()));
         } else {
-            $content = $node->getContent();
+            $content = $node->get_content();
             if (!preg_match('~^[a-zA-Z0-9_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$~', $content)) {
-                $this->raw('(' . $node->getContent() . ')');
+                $this->raw('(' . $node->get_content() . ')');
             } else {
-                $this->raw($node->getContent());
+                $this->raw($node->get_content());
             }
         }
     }
-
-    public function enterTopblock(Run $node)
+    public function enter_topblock(Run $node)
     {
-        $this->renderBlockTop($node);
+        $this->render_block_top($node);
     }
-
-    public function enterMidblock(Run $node)
+    public function enter_midblock(Run $node)
     {
-        $this->renderBlockTop($node);
+        $this->render_block_top($node);
     }
-
-    public function leaveTopBlock(Run $node)
+    public function leave_top_block(Run $node)
     {
-        if ($node->isBlock()) {
-            if (preg_match('~^(?:-\s*)?(\w+)~', $node->getContent(), $match)) {
-                $this->write($this->renderTag('end'.$match[1]));
+        if ($node->is_block()) {
+            if (preg_match('~^(?:-\s*)?(\w+)~', $node->get_content(), $match)) {
+                $this->write($this->render_tag('end' . $match[1]));
             }
         }
     }
-
-    protected function renderBlockTop(Run $node)
+    protected function render_block_top(Run $node)
     {
-        $this->addDebugInfos($node);
-        $this->write($this->renderTag($node->getContent()));
+        $this->add_debug_infos($node);
+        $this->write($this->render_tag($node->get_content()));
     }
-
-    public function enterObjectRefClass(ObjectRefClass $node)
+    public function enter_object_ref_class(Object_Ref_Class $node)
     {
-        if ($this->isEchoMode()) {
+        if ($this->is_echo_mode()) {
             $this->raw('{{ ');
         }
         $this->raw('mthaml_object_ref_class(');
-
-        $this->pushEchoMode(false);
+        $this->push_echo_mode(false);
     }
-
-    public function leaveObjectRefClass(ObjectRefClass $node)
+    public function leave_object_ref_class(Object_Ref_Class $node)
     {
         $this->raw(')');
-
-        $this->popEchoMode();
-        if ($this->isEchoMode()) {
+        $this->pop_echo_mode();
+        if ($this->is_echo_mode()) {
             $this->raw(' }}');
         }
     }
-
-    public function enterObjectRefId(ObjectRefId $node)
+    public function enter_object_ref_id(Object_Ref_Id $node)
     {
-        if ($this->isEchoMode()) {
+        if ($this->is_echo_mode()) {
             $this->raw('{{ ');
         }
         $this->raw('mthaml_object_ref_id(');
-
-        $this->pushEchoMode(false);
+        $this->push_echo_mode(false);
     }
-
-    public function leaveObjectRefId(ObjectRefId $node)
+    public function leave_object_ref_id(Object_Ref_Id $node)
     {
         $this->raw(')');
-
-        $this->popEchoMode();
-        if ($this->isEchoMode()) {
+        $this->pop_echo_mode();
+        if ($this->is_echo_mode()) {
             $this->raw(' }}');
         }
     }
-
-    public function enterObjectRefPrefix(NodeAbstract $node)
+    public function enter_object_ref_prefix(Node_Abstract $node)
     {
         $this->raw(', ');
     }
-
-    public function enterFilter(Filter $node)
+    public function enter_filter(Filter $node)
     {
-        $filter = $this->env->getFilter($node->getFilter());
-
-        if (!$filter->isOptimizable($this, $node, $this->env->getOptions())) {
-            $this->write('{% filter mthaml_'.$node->getFilter().' %}', true, false);
-            $this->savedIndent[] = $this->indent;
+        $filter = $this->env->get_filter($node->get_filter());
+        if (!$filter->is_optimizable($this, $node, $this->env->get_options())) {
+            $this->write('{% filter mthaml_' . $node->get_filter() . ' %}', true, false);
+            $this->saved_indent[] = $this->indent;
             $this->indent = 0;
         }
     }
-
-    public function leaveFilter(Filter $node)
+    public function leave_filter(Filter $node)
     {
-        $filter = $this->env->getFilter($node->getFilter());
-
-        if (!$filter->isOptimizable($this, $node, $this->env->getOptions())) {
+        $filter = $this->env->get_filter($node->get_filter());
+        if (!$filter->is_optimizable($this, $node, $this->env->get_options())) {
             $this->write('{% endfilter %}');
-            $this->indent = $this->popSavedIndent();
+            $this->indent = $this->pop_saved_indent();
         }
     }
-
-    protected function renderTag($content)
+    protected function render_tag($content)
     {
         $prefix = ' ';
         $suffix = ' ';
-
         if (preg_match('/^-/', $content)) {
             $prefix = '';
         }
         if (preg_match('/-$/', $content)) {
             $suffix = '';
         }
-
         return sprintf('{%%%s%s%s%%}', $prefix, $content, $suffix);
     }
-
-    protected function writeDebugInfos($lineno)
+    protected function write_debug_infos($lineno)
     {
         $infos = sprintf('{%% line %d %%}', $lineno);
         $this->raw($infos);
     }
-
-    protected function renderDynamicAttributes(Tag $tag)
+    protected function render_dynamic_attributes(Tag $tag)
     {
         $this->raw(' ');
-
-        foreach ($tag->getAttributes() as $attr) {
-            $this->addDebugInfos($attr);
+        foreach ($tag->get_attributes() as $attr) {
+            $this->add_debug_infos($attr);
             break;
         }
-
         $this->raw('{{ mthaml_attributes([');
-
-        $this->setEchoMode(false);
-
-        foreach (array_values($tag->getAttributes()) as $i => $attr) {
-
+        $this->set_echo_mode(false);
+        foreach (array_values($tag->get_attributes()) as $i => $attr) {
             if (0 !== $i) {
                 $this->raw(', ');
             }
-
-            if ($attr instanceof TagAttributeInterpolation) {
+            if ($attr instanceof Tag_Attribute_Interpolation) {
                 $this->raw('mthaml_attribute_interpolation(');
-                $attr->getValue()->accept($this);
+                $attr->get_value()->accept($this);
                 $this->raw(')');
-            } elseif ($attr instanceof TagAttributeList) {
+            } elseif ($attr instanceof Tag_Attribute_List) {
                 $this->raw('mthaml_attribute_list(');
-                $attr->getValue()->accept($this);
+                $attr->get_value()->accept($this);
                 $this->raw(')');
             } else {
                 $this->raw('[');
-                $attr->getName()->accept($this);
+                $attr->get_name()->accept($this);
                 $this->raw(', ');
-                if ($attr->getValue()) {
-                    $attr->getValue()->accept($this);
+                if ($attr->get_value()) {
+                    $attr->get_value()->accept($this);
                 } else {
                     $this->raw('true');
                 }
                 $this->raw(']');
             }
         }
-
         $this->raw(']');
-
-        $this->setEchoMode(true);
-
+        $this->set_echo_mode(true);
         $this->raw(', ');
-        $this->raw($this->stringLiteral($this->env->getOption('format')));
+        $this->raw($this->string_literal($this->env->get_option('format')));
         $this->raw(', ');
-        $this->raw($this->stringLiteral($this->charset));
-
+        $this->raw($this->string_literal($this->charset));
         $this->raw(')|raw }}');
     }
 }

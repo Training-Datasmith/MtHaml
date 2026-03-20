@@ -1,64 +1,53 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-class TagAttribute extends NodeAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+class Tag_Attribute extends Node_Abstract
 {
     protected $name;
     protected $value;
-
-    public function __construct(array $position, NodeAbstract $name = null, NodeAbstract $value = null)
+    public function __construct(array $position, Node_Abstract $name = null, Node_Abstract $value = null)
     {
         parent::__construct($position);
         $this->name = $name;
         $this->value = $value;
     }
-
-    public function setName(NodeAbstract $name)
+    public function set_name(Node_Abstract $name)
     {
         $this->name = $name;
     }
-
-    public function getName()
+    public function get_name()
     {
         return $this->name;
     }
-
-    public function setValue(NodeAbstract $value)
+    public function set_value(Node_Abstract $value)
     {
         $this->value = $value;
     }
-
-    public function getValue()
+    public function get_value()
     {
         return $this->value;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'attribute';
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterTagAttribute($this)) {
-
-            if (false !== $visitor->enterTagAttributeName($this)) {
-                $this->getName()->accept($visitor);
+        if (false !== $visitor->enter_tag_attribute($this)) {
+            if (false !== $visitor->enter_tag_attribute_name($this)) {
+                $this->get_name()->accept($visitor);
             }
-            $visitor->leaveTagAttributeName($this);
-
-            if ($this->getValue()) {
-                if (false !== $visitor->enterTagAttributeValue($this)) {
-                    $this->getValue()->accept($visitor);
+            $visitor->leave_tag_attribute_name($this);
+            if ($this->get_value()) {
+                if (false !== $visitor->enter_tag_attribute_value($this)) {
+                    $this->get_value()->accept($visitor);
                 }
-                $visitor->leaveTagAttributeValue($this);
+                $visitor->leave_tag_attribute_value($this);
             }
         }
-        $visitor->leaveTagAttribute($this);
+        $visitor->leave_tag_attribute($this);
     }
 }

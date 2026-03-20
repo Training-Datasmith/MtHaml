@@ -1,78 +1,62 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
-abstract class NodeAbstract
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
+abstract class Node_Abstract
 {
     private $position;
     private $parent;
-    private $nextSibling;
-    private $previousSibling;
-
+    private $next_sibling;
+    private $previous_sibling;
     public function __construct(array $position)
     {
         $this->position = $position;
     }
-
-    public function getPosition()
+    public function get_position()
     {
         return $this->position;
     }
-
-    public function getLineno()
+    public function get_lineno()
     {
         return $this->position['lineno'];
     }
-
-    public function getColumn()
+    public function get_column()
     {
         return $this->position['column'];
     }
-
-    protected function setParent(NodeAbstract $parent = null)
+    protected function set_parent(Node_Abstract $parent = null)
     {
         $this->parent = $parent;
     }
-
-    public function hasParent()
+    public function has_parent()
     {
         return null !== $this->parent;
     }
-
-    public function getParent()
+    public function get_parent()
     {
         return $this->parent;
     }
-
-    abstract public function getNodeName();
-
-    abstract public function accept(NodeVisitorInterface $visitor);
-
-    protected function setNextSibling(NodeAbstract $node = null)
+    abstract public function get_node_name();
+    abstract public function accept(Node_Visitor_Interface $visitor);
+    protected function set_next_sibling(Node_Abstract $node = null)
     {
-        $this->nextSibling = $node;
+        $this->next_sibling = $node;
     }
-
-    public function getNextSibling()
+    public function get_next_sibling()
     {
-        return $this->nextSibling;
+        return $this->next_sibling;
     }
-
-    protected function setPreviousSibling(NodeAbstract $node = null)
+    protected function set_previous_sibling(Node_Abstract $node = null)
     {
-        $this->previousSibling = $node;
+        $this->previous_sibling = $node;
     }
-
-    public function getPreviousSibling()
+    public function get_previous_sibling()
     {
-        return $this->previousSibling;
+        return $this->previous_sibling;
     }
-
-    public function isConst()
+    public function is_const()
     {
         return false;
     }

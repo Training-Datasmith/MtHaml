@@ -1,76 +1,64 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Node;
 
-namespace MtHaml\Node;
-
-use MtHaml\NodeVisitor\NodeVisitorInterface;
-
+use Mt_Haml\Node_Visitor\Node_Visitor_Interface;
 /**
  * Run Node
  *
  * Represents code to execute. If there is children, the node should be
  * rendered as a block (the renderer should emit a properly closed block).
  */
-class Run extends NestAbstract
+class Run extends Nest_Abstract
 {
     private $midblock;
-
     public function __construct(array $position, $content)
     {
         parent::__construct($position);
-        $this->setContent($content);
+        $this->set_content($content);
     }
-
-    public function allowsNestingAndContent()
+    public function allows_nesting_and_content()
     {
         return true;
     }
-
-    public function getNodeName()
+    public function get_node_name()
     {
         return 'exec';
     }
-
-    public function setMidblock(Run $midblock = null)
+    public function set_midblock(Run $midblock = null)
     {
         $this->midblock = $midblock;
     }
-
-    public function getMidblock()
+    public function get_midblock()
     {
         return $this->midblock;
     }
-
-    public function hasMidblock()
+    public function has_midblock()
     {
         return null !== $this->midblock;
     }
-
-    public function isBlock()
+    public function is_block()
     {
-        if ($this->hasChilds()) {
+        if ($this->has_childs()) {
             return true;
         }
-        return (bool) $this->hasMidblock();
+        return (bool) $this->has_midblock();
     }
-
-    public function accept(NodeVisitorInterface $visitor)
+    public function accept(Node_Visitor_Interface $visitor)
     {
-        if (false !== $visitor->enterRun($this)) {
-
-            if (false !== $visitor->enterRunChilds($this)) {
-                $this->visitChilds($visitor);
+        if (false !== $visitor->enter_run($this)) {
+            if (false !== $visitor->enter_run_childs($this)) {
+                $this->visit_childs($visitor);
             }
-            $visitor->leaveRunChilds($this);
-
-            if (false !== $visitor->enterRunMidblock($this)) {
-                if (null !== $block = $this->getMidblock()) {
+            $visitor->leave_run_childs($this);
+            if (false !== $visitor->enter_run_midblock($this)) {
+                if (null !== $block = $this->get_midblock()) {
                     $block->accept($visitor);
                 }
             }
-            $visitor->leaveRunMidblock($this);
+            $visitor->leave_run_midblock($this);
         }
-        $visitor->leaveRun($this);
+        $visitor->leave_run($this);
     }
 }

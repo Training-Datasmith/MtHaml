@@ -1,25 +1,20 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Target;
 
-namespace MtHaml\Target;
-
-use MtHaml\Environment;
-use MtHaml\NodeVisitor\PhpRenderer;
-
-class Php extends TargetAbstract
+use Mt_Haml\Environment;
+use Mt_Haml\Node_Visitor\Php_Renderer;
+class Php extends Target_Abstract
 {
     public function __construct(array $options = [])
     {
-        parent::__construct($options + [
-            'midblock_regex' => '~else\b|else\s*if\b|catch\b~A',
-        ]);
+        parent::__construct($options + ['midblock_regex' => '~else\b|else\s*if\b|catch\b~A']);
     }
-
-    public function getDefaultRendererFactory()
+    public function get_default_renderer_factory()
     {
         return function (Environment $env, array $options) {
-            return new PhpRenderer($env);
+            return new Php_Renderer($env);
         };
     }
 }

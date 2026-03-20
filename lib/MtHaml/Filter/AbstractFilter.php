@@ -1,45 +1,39 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Mt_Haml\Filter;
 
-namespace MtHaml\Filter;
-
-use MtHaml\Node\Filter;
-use MtHaml\Node\Insert;
-use MtHaml\NodeVisitor\RendererAbstract as Renderer;
-
-abstract class AbstractFilter implements FilterInterface
+use Mt_Haml\Node\Filter;
+use Mt_Haml\Node\Insert;
+use Mt_Haml\Node_Visitor\Renderer_Abstract as Renderer;
+abstract class Abstract_Filter implements Filter_Interface
 {
-    public function isOptimizable(Renderer $renderer, Filter $node, $options)
+    public function is_optimizable(Renderer $renderer, Filter $node, $options)
     {
-        foreach ($node->getChilds() as $line) {
-            foreach ($line->getContent()->getChilds() as $child) {
+        foreach ($node->get_childs() as $line) {
+            foreach ($line->get_content()->get_childs() as $child) {
                 if ($child instanceof Insert) {
                     return false;
                 }
             }
         }
-
         return true;
     }
-
-    protected function renderFilter(Renderer $renderer, Filter $node)
+    protected function render_filter(Renderer $renderer, Filter $node)
     {
-        foreach ($node->getChilds() as $child) {
+        foreach ($node->get_childs() as $child) {
             $child->accept($renderer);
         }
     }
-
-    protected function getContent(Filter $node)
+    protected function get_content(Filter $node)
     {
         $content = '';
-        foreach ($node->getChilds() as $line) {
-            foreach ($line->getContent()->getChilds() as $child) {
-                $content .= $child->getContent();
+        foreach ($node->get_childs() as $line) {
+            foreach ($line->get_content()->get_childs() as $child) {
+                $content .= $child->get_content();
             }
             $content .= "\n";
         }
-
         return $content;
     }
 }
